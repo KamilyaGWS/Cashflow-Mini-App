@@ -3,395 +3,557 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Cashflow Stats</title>
+<title>Cashflow</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap');
-:root{--gold:#D4A843;--green:#2ECC71;--red:#E74C3C;--bg:#0D0D0D;--surface:#161616;--surface2:#1E1E1E;--border:#2A2A2A;--text:#F0F0F0;--muted:#888}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap');
+:root{
+  --gold:#D4A843;--green:#2ECC71;--red:#E74C3C;--blue:#3498DB;
+  --bg:#0D0D0D;--s1:#161616;--s2:#1E1E1E;--border:#2A2A2A;
+  --text:#F0F0F0;--muted:#777;
+  --f-display:28px;--f-body:14px;--f-small:11px;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.header{background:linear-gradient(135deg,#1a1200,#0D0D0D);border-bottom:1px solid var(--border);padding:14px 20px 10px;position:sticky;top:0;z-index:100}
-.header-row{display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--gold)}
-.logo span{color:var(--text)}
-.live-badge{display:flex;align-items:center;gap:5px;background:rgba(46,204,113,.15);border:1px solid rgba(46,204,113,.3);color:var(--green);font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 1.5s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.tabs{display:flex;gap:2px;padding:10px 16px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:57px;z-index:99;overflow-x:auto;scrollbar-width:none}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:var(--f-body)}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a1200,#0D0D0D);border-bottom:1px solid var(--border);padding:13px 18px 10px;position:sticky;top:0;z-index:100}
+.hrow{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:var(--f-display);letter-spacing:3px;color:var(--gold)}
+.live{display:flex;align-items:center;gap:5px;background:rgba(46,204,113,.12);border:1px solid rgba(46,204,113,.25);color:var(--green);font-size:var(--f-small);font-weight:700;padding:3px 9px;border-radius:20px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+
+/* TABS */
+.tabs{display:flex;padding:8px 16px 0;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:55px;z-index:99;overflow-x:auto;scrollbar-width:none;gap:2px}
 .tabs::-webkit-scrollbar{display:none}
-.tab{font-size:12px;font-weight:600;padding:8px 12px;border-radius:8px 8px 0 0;cursor:pointer;white-space:nowrap;color:var(--muted);border:none;background:none;transition:all .2s;flex-shrink:0}
-.tab.active{color:var(--gold);background:var(--surface);border-bottom:2px solid var(--gold)}
-.view{display:none;padding:14px 16px 100px;animation:fadeIn .2s ease}
+.tab{font-size:var(--f-small);font-weight:700;padding:7px 14px;border-radius:7px 7px 0 0;cursor:pointer;white-space:nowrap;color:var(--muted);border:none;background:none;transition:all .2s;flex-shrink:0;letter-spacing:.3px;text-transform:uppercase}
+.tab.active{color:var(--gold);background:var(--s1);border-bottom:2px solid var(--gold)}
+
+/* VIEWS */
+.view{display:none;padding:14px 16px 90px;animation:fadeIn .18s ease}
 .view.active{display:block}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;color:var(--gold);margin-bottom:12px}
-.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 12px;text-align:center}
-.stat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold)}
-.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
-.player-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;gap:12px;overflow:hidden;animation:slideIn .3s ease both}
-@keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
-.player-card.rank-1{border-color:var(--gold);background:linear-gradient(135deg,#1a1200,var(--surface))}
-.player-card.rank-2{border-color:#9BA6B4}
-.player-card.rank-3{border-color:#B87333}
-.rank-num{font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:28px;text-align:center}
-.rank-1 .rank-num{color:var(--gold)}.rank-2 .rank-num{color:#9BA6B4}.rank-3 .rank-num{color:#B87333}
-.rank-num.other{color:var(--muted);font-size:14px}
-.avatar{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#000}
-.player-info{flex:1;min-width:0}
-.player-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chips{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
-.chip{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
-.chip.wins{background:rgba(46,204,113,.15);color:var(--green)}
-.chip.games{background:rgba(255,255,255,.07);color:var(--muted)}
-.wr-col{text-align:right;flex-shrink:0}
-.wr-val{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green)}
-.wr-lbl{font-size:9px;color:var(--muted)}
-.my-hero{background:linear-gradient(135deg,#1a1200,var(--surface));border:1px solid var(--gold);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px}
-.my-rank-num{font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--gold);line-height:1}
-.my-rank-label{font-size:13px;color:var(--muted);margin-bottom:16px}
-.my-name{font-weight:700;font-size:18px;margin-bottom:14px}
-.my-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.my-stat{background:var(--surface2);border-radius:10px;padding:10px}
-.my-stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px}
-.my-stat-lbl{font-size:10px;color:var(--muted)}
-.not-found{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:30px;text-align:center;color:var(--muted);font-size:14px}
-.game-entry{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:9px}
-.game-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.game-winner{display:flex;align-items:center;gap:7px}
-.game-winner-name{font-weight:700;font-size:14px;color:var(--gold)}
-.game-date{font-size:11px;color:var(--muted)}
-.game-players{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
-.gp-chip{font-size:11px;background:var(--surface2);border-radius:20px;padding:3px 9px;color:var(--text)}
-.gp-chip.w{background:rgba(212,168,67,.2);color:var(--gold)}
-.form-group{margin-bottom:12px}
-.form-label{font-size:11px;color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.5px}
-.form-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s}
-.form-input:focus{border-color:var(--gold)}
-.btn{width:100%;border:none;border-radius:12px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1.5px;cursor:pointer;transition:opacity .2s;margin-bottom:8px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* SECTION TITLE */
+.stitle{font-family:'Bebas Neue',sans-serif;font-size:var(--f-display);letter-spacing:1.5px;color:var(--gold);margin-bottom:12px}
+
+/* STAT STRIP */
+.strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.scard{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.sval{font-family:'Bebas Neue',sans-serif;font-size:var(--f-display);color:var(--gold)}
+.slbl{font-size:var(--f-small);color:var(--muted);margin-top:2px}
+
+/* PLAYER CARD */
+.pcard{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:11px;animation:slideIn .3s ease both}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
+.pcard.r1{border-color:var(--gold);background:linear-gradient(135deg,#1a1200,var(--s1))}
+.pcard.r2{border-color:#9BA6B4}
+.pcard.r3{border-color:#B87333}
+.rank{font-family:'Bebas Neue',sans-serif;font-size:20px;min-width:26px;text-align:center}
+.r1 .rank{color:var(--gold)}.r2 .rank{color:#9BA6B4}.r3 .rank{color:#B87333}
+.rank.other{color:var(--muted);font-size:var(--f-body)}
+.ava{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#000}
+.pinfo{flex:1;min-width:0}
+.pname{font-weight:700;font-size:var(--f-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psub{font-size:var(--f-small);color:var(--muted);margin-top:3px}
+.pright{text-align:right;flex-shrink:0}
+.pbig{font-family:'Bebas Neue',sans-serif;font-size:20px}
+.psmall{font-size:var(--f-small);color:var(--muted)}
+
+/* STAMPS */
+.stamps-row{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.stamp{width:16px;height:16px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:9px;color:#000;font-weight:700;flex-shrink:0}
+.stamp.used{background:var(--s2);border:1px solid var(--border)}
+.ticket-badge{background:rgba(52,152,219,.2);border:1px solid rgba(52,152,219,.4);color:var(--blue);font-size:var(--f-small);font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:4px}
+
+/* MY HERO */
+.hero{background:linear-gradient(135deg,#1a1200,var(--s1));border:1px solid var(--gold);border-radius:16px;padding:20px;text-align:center;margin-bottom:12px}
+.hero-name{font-weight:700;font-size:17px;margin-bottom:6px}
+.hero-rank{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);line-height:1}
+.hero-sub{font-size:var(--f-small);color:var(--muted);margin-bottom:14px}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mstat{background:var(--s2);border-radius:10px;padding:10px;text-align:center}
+.mval{font-family:'Bebas Neue',sans-serif;font-size:24px}
+.mlbl{font-size:var(--f-small);color:var(--muted)}
+.stamps-display{background:var(--s2);border-radius:10px;padding:12px;margin-bottom:8px}
+.stamps-title{font-size:var(--f-small);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.stamps-grid{display:flex;gap:4px;flex-wrap:wrap}
+.s-dot{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#000}
+.s-dot.filled{background:var(--gold)}
+.s-dot.empty{background:var(--s1);border:1px solid var(--border);color:var(--muted)}
+.s-dot.ticket{background:var(--blue);color:#fff}
+.fiq-history{margin-top:10px}
+.fiq-hist-title{font-size:var(--f-small);color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:6px}
+.fiq-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)}
+.fiq-row:last-child{border:none}
+
+/* FIQ TAB */
+.fiq-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;animation:slideIn .3s ease both}
+.fiq-bar-bg{background:var(--s2);border-radius:6px;height:6px;margin-top:6px;overflow:hidden}
+.fiq-bar{height:100%;border-radius:6px;transition:width .8s ease}
+
+/* NOT FOUND */
+.nf{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+.nf-icon{font-size:40px;margin-bottom:10px}
+
+/* ADMIN */
+.asec{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+.asec-title{font-size:var(--f-small);color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.flabel{font-size:var(--f-small);color:var(--muted);margin-bottom:5px;display:block;text-transform:uppercase;letter-spacing:.4px;font-weight:700}
+.finput{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:var(--f-body);outline:none;transition:border-color .2s;margin-bottom:10px}
+.finput:focus{border-color:var(--gold)}
+.fselect{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:var(--f-body);outline:none;appearance:none;cursor:pointer;margin-bottom:10px}
+.btn{width:100%;border:none;border-radius:10px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;cursor:pointer;transition:opacity .2s;margin-bottom:6px}
 .btn:active{opacity:.75}
 .btn-gold{background:var(--gold);color:#000}
-.admin-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
-.admin-section-title{font-size:12px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
-.form-select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;appearance:none;cursor:pointer}
-.form-select:focus{border-color:var(--gold)}
-.player-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:8px 0}
-.ptoggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px;text-align:center;cursor:pointer;transition:all .15s;font-size:12px;font-weight:600}
-.ptoggle.on{border-color:var(--gold);background:rgba(212,168,67,.12);color:var(--gold)}
-.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px}
-.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+.btn-red{background:rgba(231,76,60,.2);color:var(--red);border:1px solid rgba(231,76,60,.3)}
+.btn-blue{background:rgba(52,152,219,.2);color:var(--blue);border:1px solid rgba(52,152,219,.3)}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+
+/* RESULTS BUILDER */
+.res-player{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.res-name{flex:1;font-size:var(--f-body);font-weight:600}
+.place-sel{background:var(--s1);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-size:var(--f-small);width:60px;outline:none}
+.fiq-inp{background:var(--s1);border:1px solid var(--border);border-radius:7px;padding:5px 8px;color:var(--text);font-size:var(--f-small);width:90px;outline:none;font-family:'DM Sans',sans-serif}
+.place-sel:focus,.fiq-inp:focus{border-color:var(--gold)}
+
+/* LOADER */
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:10px}
+.spinner{width:30px;height:30px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loader-text{font-size:13px;color:var(--muted)}
-.empty{text-align:center;padding:40px 20px;color:var(--muted)}
-.empty-icon{font-size:44px;margin-bottom:10px}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;max-width:90vw;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.ltext{font-size:var(--f-small);color:var(--muted)}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:20px;font-size:var(--f-body);font-weight:600;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;max-width:90vw;box-shadow:0 4px 20px rgba(0,0,0,.6)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-color:var(--green);color:var(--green)}
 .toast.err{border-color:var(--red);color:var(--red)}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:10px 0}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="header-row">
-    <div class="logo">CASH<span>FLOW</span> <span style="font-size:13px;color:var(--muted);font-family:'DM Sans';font-weight:300;letter-spacing:0">stats</span></div>
-    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-  </div>
-</div>
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('leaderboard',this)">🏆 Рейтинг</button>
-  <button class="tab" onclick="switchTab('my',this)">🎯 Мои stats</button>
-  <button class="tab" onclick="switchTab('history',this)">📜 История</button>
-  <button class="tab" id="admin-tab" style="display:none" onclick="switchTab('admin',this)">⚙️ Админ</button>
-</div>
-<div id="tab-leaderboard" class="view active">
-  <div class="stat-strip">
-    <div class="stat-card"><div class="stat-val" id="s-players">—</div><div class="stat-lbl">Игроков</div></div>
-    <div class="stat-card"><div class="stat-val" id="s-games">—</div><div class="stat-lbl">Партий</div></div>
-    <div class="stat-card"><div class="stat-val" id="s-wins">—</div><div class="stat-lbl">Побед</div></div>
-  </div>
-  <div class="section-title">Таблица лидеров</div>
-  <div id="leaderboard-list"><div class="loader"><div class="spinner"></div><div class="loader-text">Загружаем рейтинг…</div></div></div>
-</div>
-<div id="tab-my" class="view">
-  <div class="section-title">Моя статистика</div>
-  <div id="my-content"><div class="loader"><div class="spinner"></div><div class="loader-text">Ищем вас в базе…</div></div></div>
-</div>
-<div id="tab-history" class="view">
-  <div class="section-title">История партий</div>
-  <div id="history-list"><div class="loader"><div class="spinner"></div><div class="loader-text">Загружаем историю…</div></div></div>
-</div>
-<div id="tab-admin" class="view">
-  <div class="section-title">Панель администратора</div>
-  <div class="admin-section">
-    <div class="admin-section-title">➕ Добавить игрока</div>
-    <div class="form-group"><label class="form-label">ФИО игрока</label><input class="form-input" id="inp-name" placeholder="Иванов Иван Иванович"></div>
-    <div class="form-group"><label class="form-label">Telegram ID (необязательно)</label><input class="form-input" id="inp-tgid" placeholder="123456789" type="number"></div>
-    <button class="btn btn-gold" onclick="adminAddPlayer()">+ ДОБАВИТЬ ИГРОКА</button>
-  </div>
-  <div class="admin-section">
-    <div class="admin-section-title">🏆 Записать победу</div>
-    <div class="form-group"><label class="form-label">Победитель</label><select class="form-select" id="sel-winner"></select></div>
-    <button class="btn btn-gold" onclick="adminAddWin()">🏆 ДОБАВИТЬ ПОБЕДУ</button>
-  </div>
-  <div class="admin-section">
-    <div class="admin-section-title">🎮 Записать партию</div>
-    <div class="form-group"><label class="form-label">Победитель</label><select class="form-select" id="sel-game-winner"></select></div>
-    <div class="form-group"><label class="form-label">Участники (отметьте всех)</label><div class="player-grid" id="participants-grid"></div></div>
-    <button class="btn btn-gold" onclick="adminAddGame()">💾 СОХРАНИТЬ ПАРТИЮ</button>
-  </div>
-</div>
-<div class="toast" id="toast"></div>
-<script>
-// ══ ВСТАВЬТЕ ВАШ URL СЮДА ══
-const API_URL = 'https://script.google.com/macros/s/AKfycbyAkbNYrUj-zGhFpE0W5sJSWv0GwXPm5bwVgJt0t9yw1mWEv3DZUD0TtQrM8gWPxP6A/exec';
 
-const COLORS = ['#E74C3C','#E67E22','#F1C40F','#2ECC71','#1ABC9C','#3498DB','#9B59B6','#E91E63','#00BCD4','#FF5722'];
+<div class="header">
+  <div class="hrow">
+    <div class="logo">CASHFLOW</div>
+    <div class="live"><div class="live-dot"></div>LIVE</div>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('top',this)">Рейтинг</button>
+  <button class="tab" onclick="switchTab('my',this)">Мои игры</button>
+  <button class="tab" onclick="switchTab('fiq',this)">FIQ</button>
+  <button class="tab" id="admin-tab" style="display:none" onclick="switchTab('admin',this)">Админ</button>
+</div>
+
+<!-- РЕЙТИНГ -->
+<div id="tab-top" class="view active">
+  <div class="strip">
+    <div class="scard"><div class="sval" id="s-players">—</div><div class="slbl">Игроков</div></div>
+    <div class="scard"><div class="sval" id="s-games">—</div><div class="slbl">Игр</div></div>
+    <div class="scard"><div class="sval" id="s-leader">—</div><div class="slbl">Лидер</div></div>
+  </div>
+  <div class="stitle">Таблица лидеров</div>
+  <div style="font-size:var(--f-small);color:var(--muted);margin-bottom:10px">🔖 = накопленные печати &nbsp;|&nbsp; 🎫 = бесплатных билета</div>
+  <div id="top-list"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
+</div>
+
+<!-- МОИ ИГРЫ -->
+<div id="tab-my" class="view">
+  <div class="stitle">Мои игры</div>
+  <div id="my-content"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
+</div>
+
+<!-- FIQ -->
+<div id="tab-fiq" class="view">
+  <div class="stitle">Financial IQ</div>
+  <div style="font-size:var(--f-small);color:var(--muted);margin-bottom:12px">Рейтинг по среднему FIQ за все игры</div>
+  <div id="fiq-list"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
+</div>
+
+<!-- АДМИН -->
+<div id="tab-admin" class="view">
+  <div class="stitle">Администратор</div>
+
+  <!-- Записать игру -->
+  <div class="asec">
+    <div class="asec-title">🎮 Записать игру</div>
+    <label class="flabel">Дата игры</label>
+    <input class="finput" id="game-date" type="date">
+    <label class="flabel">Заметка (необязательно)</label>
+    <input class="finput" id="game-notes" placeholder="Например: Офис, 6 игроков">
+    <label class="flabel">Результаты — место, FIQ каждого участника</label>
+    <div id="results-builder"></div>
+    <button class="btn btn-gold" onclick="adminRecordGame()">💾 СОХРАНИТЬ ИГРУ</button>
+  </div>
+
+  <!-- Добавить игрока -->
+  <div class="asec">
+    <div class="asec-title">➕ Добавить игрока</div>
+    <label class="flabel">Имя</label>
+    <input class="finput" id="inp-name" placeholder="Иванов Иван">
+    <label class="flabel">Telegram ID (необязательно)</label>
+    <input class="finput" id="inp-tgid" placeholder="123456789" type="number">
+    <button class="btn btn-gold" onclick="adminAddPlayer()">+ ДОБАВИТЬ</button>
+  </div>
+
+  <!-- Управление игроком -->
+  <div class="asec">
+    <div class="asec-title">✏️ Управление игроком</div>
+    <label class="flabel">Выберите игрока</label>
+    <select class="fselect" id="sel-manage" onchange="onSelectPlayer()"></select>
+    <div id="manage-detail" style="display:none">
+      <div class="div"></div>
+      <label class="flabel">Изменить имя</label>
+      <input class="finput" id="edit-name" placeholder="Новое имя">
+      <label class="flabel">Telegram ID</label>
+      <input class="finput" id="edit-tgid" placeholder="123456789" type="number">
+      <label class="flabel">Билеты (вручную)</label>
+      <input class="finput" id="edit-tickets" type="number" min="0" placeholder="0">
+      <button class="btn btn-gold" onclick="adminEditPlayer()">✅ СОХРАНИТЬ</button>
+      <button class="btn btn-blue" onclick="adminUseTicket()">🎫 ИСПОЛЬЗОВАТЬ БИЛЕТ</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══ НАСТРОЙКА ══
+const API_URL = 'https://script.google.com/macros/s/AKfycbzB8UqcCA_RvBcGT0f3MjVMY1PgjeS3ECZjnCthYu9darSHiif46HJN-rG58MJjEYgG/exec';
+
+const COLORS = ['#E74C3C','#E67E22','#F1C40F','#2ECC71','#1ABC9C','#3498DB','#9B59B6','#E91E63','#00BCD4','#FF5722','#8BC34A','#FF9800'];
 const tg = window.Telegram?.WebApp;
-let telegramUser = null;
+let tgUser = null;
 let allPlayers = [];
-let _jsonpCounter = 0;
+let _jc = 0;
 
 if (tg) {
   tg.ready(); tg.expand();
   tg.setHeaderColor?.('#0D0D0D');
   tg.setBackgroundColor?.('#0D0D0D');
-  telegramUser = tg.initDataUnsafe?.user;
+  tgUser = tg.initDataUnsafe?.user;
 }
 
-// ── JSONP — работает в мобильном Telegram ──────────────
-function apiGet(action, params = {}) {
-  return new Promise((resolve) => {
-    const cbName = 'jsonpCb' + (++_jsonpCounter);
-    const scriptId = 'jsonpScript' + _jsonpCounter;
+// ── JSONP ──────────────────────────────────────────────────────
+function apiGet(action, params={}) {
+  return new Promise(resolve => {
+    const cb = 'jcb'+(++_jc);
+    const sid = 'js'+_jc;
     const url = new URL(API_URL);
     url.searchParams.set('action', action);
-    url.searchParams.set('callback', cbName);
-    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-
-    const timer = setTimeout(() => {
-      resolve({ ok: false, error: 'timeout' });
-      delete window[cbName];
-      document.getElementById(scriptId)?.remove();
-    }, 15000);
-
-    window[cbName] = (data) => {
-      clearTimeout(timer);
-      resolve(data);
-      delete window[cbName];
-      document.getElementById(scriptId)?.remove();
-    };
-
-    const script = document.createElement('script');
-    script.id = scriptId;
-    script.src = url.toString();
-    script.onerror = () => {
-      clearTimeout(timer);
-      resolve({ ok: false, error: 'network error' });
-      delete window[cbName];
-    };
-    document.head.appendChild(script);
+    url.searchParams.set('callback', cb);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k,v));
+    const t = setTimeout(() => { resolve({ok:false,error:'timeout'}); delete window[cb]; document.getElementById(sid)?.remove(); }, 15000);
+    window[cb] = data => { clearTimeout(t); resolve(data); delete window[cb]; document.getElementById(sid)?.remove(); };
+    const s = document.createElement('script');
+    s.id = sid; s.src = url.toString();
+    s.onerror = () => { clearTimeout(t); resolve({ok:false,error:'network'}); delete window[cb]; };
+    document.head.appendChild(s);
   });
 }
 
-// ── POST для Admin панели ──────────────────────────────
 async function apiPost(body) {
   try {
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ ...body, telegram_id: telegramUser?.id })
-    });
-    const text = await r.text();
-    return JSON.parse(text);
-  } catch(e) {
-    return { ok: false, error: e.toString() };
-  }
+    const r = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...body,telegram_id:tgUser?.id})});
+    return JSON.parse(await r.text());
+  } catch(e) { return {ok:false,error:e.toString()}; }
 }
 
-// ── Tabs ───────────────────────────────────────────────
+// ── TABS ──────────────────────────────────────────────────────
 function switchTab(tab, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
   btn.classList.add('active');
-  if (tab === 'leaderboard') loadLeaderboard();
-  if (tab === 'my')          loadMyStats();
-  if (tab === 'history')     loadHistory();
-  if (tab === 'admin')       loadAdminPanel();
+  if (tab==='top')   loadTop();
+  if (tab==='my')    loadMy();
+  if (tab==='fiq')   loadFiq();
+  if (tab==='admin') loadAdmin();
 }
 
-// ── Leaderboard ────────────────────────────────────────
-async function loadLeaderboard() {
-  document.getElementById('leaderboard-list').innerHTML = '<div class="loader"><div class="spinner"></div><div class="loader-text">Загружаем рейтинг…</div></div>';
+// ── РЕЙТИНГ ───────────────────────────────────────────────────
+async function loadTop() {
+  document.getElementById('top-list').innerHTML = loader();
   try {
-    const [lbRes, statsRes] = await Promise.all([apiGet('getLeaderboard'), apiGet('getStats')]);
-    if (statsRes.ok && statsRes.data) {
-      document.getElementById('s-players').textContent = statsRes.data.players;
-      document.getElementById('s-games').textContent   = statsRes.data.games;
-      document.getElementById('s-wins').textContent    = statsRes.data.totalWins;
+    const [lb, st] = await Promise.all([apiGet('getLeaderboard'), apiGet('getStats')]);
+    if (st.ok && st.data) {
+      document.getElementById('s-players').textContent = st.data.players;
+      document.getElementById('s-games').textContent   = st.data.games;
+      const ldr = st.data.leader;
+      document.getElementById('s-leader').textContent  = ldr ? ldr.name.split(' ')[0] : '—';
     }
-    const el = document.getElementById('leaderboard-list');
-    if (!lbRes.ok || !lbRes.data || !lbRes.data.length) {
-      el.innerHTML = '<div class="empty"><div class="empty-icon">🏆</div>Нет данных</div>'; return;
-    }
-    el.innerHTML = lbRes.data.map(p => cardHTML(p)).join('');
+    const el = document.getElementById('top-list');
+    if (!lb.ok || !lb.data?.length) { el.innerHTML = empty('🏆','Нет данных'); return; }
+    el.innerHTML = lb.data.map(p => topCard(p)).join('');
   } catch(e) {
-    document.getElementById('leaderboard-list').innerHTML =
-      '<div class="empty"><div class="empty-icon">⚠️</div>Ошибка загрузки</div>';
+    document.getElementById('top-list').innerHTML = empty('⚠️','Ошибка загрузки');
   }
 }
 
-function cardHTML(p) {
-  const rc = p.rank <= 3 ? `rank-${p.rank}` : '';
+function topCard(p) {
+  const rc = p.rank<=3 ? 'r'+p.rank : '';
   const ri = p.rank===1?'🥇':p.rank===2?'🥈':p.rank===3?'🥉':'';
-  const rh = p.rank<=3 ? `<span class="rank-num">${ri}</span>` : `<span class="rank-num other">${p.rank}</span>`;
-  const color = COLORS[(p.id-1) % COLORS.length];
-  const ini = (p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-  return `<div class="player-card ${rc}" style="animation-delay:${Math.min(p.rank-1,9)*0.05}s">
+  const rh = p.rank<=3 ? `<span class="rank">${ri}</span>` : `<span class="rank other">${p.rank}</span>`;
+  const color = COLORS[(p.id-1)%COLORS.length];
+  const ini   = (p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  const delay = Math.min(p.rank-1,9)*0.04;
+
+  // Рисуем 9 кружков печатей
+  const free  = p.free_stamps || 0;
+  const dots  = Array.from({length:9},(_,i)=>
+    `<div class="s-dot ${i<free%9?'filled':'empty'}">${i<free%9?'🔖':''}</div>`).join('');
+
+  const ticketHtml = p.tickets > 0
+    ? `<div class="ticket-badge">🎫 ${p.tickets} билет${p.tickets>1?p.tickets>4?'ов':'а':''}</div>` : '';
+
+  return `<div class="pcard ${rc}" style="animation-delay:${delay}s">
     ${rh}
-    <div class="avatar" style="background:${color}">${ini}</div>
-    <div class="player-info">
-      <div class="player-name">${p.full_name}</div>
-      <div class="chips"><span class="chip wins">🏆 ${p.wins}</span><span class="chip games">${p.games} партий</span></div>
+    <div class="ava" style="background:${color}">${ini}</div>
+    <div class="pinfo">
+      <div class="pname">${p.full_name}</div>
+      <div class="stamps-row">${dots}</div>
+      ${ticketHtml}
     </div>
-    <div class="wr-col"><div class="wr-val">${p.winrate}%</div><div class="wr-lbl">WR</div></div>
+    <div class="pright">
+      <div class="pbig" style="color:var(--gold)">${p.total_stamps}</div>
+      <div class="psmall">печатей</div>
+      ${p.avg_fiq > 0 ? `<div class="psmall" style="color:var(--green);margin-top:2px">${p.avg_fiq} FIQ</div>` : ''}
+    </div>
   </div>`;
 }
 
-// ── My Stats ───────────────────────────────────────────
-async function loadMyStats() {
+// ── МОИ ИГРЫ ──────────────────────────────────────────────────
+async function loadMy() {
   const el = document.getElementById('my-content');
-  if (!telegramUser) {
-    el.innerHTML = '<div class="not-found"><div style="font-size:36px;margin-bottom:10px">🔍</div>Откройте через Telegram</div>'; return;
-  }
-  el.innerHTML = '<div class="loader"><div class="spinner"></div><div class="loader-text">Ищем вас…</div></div>';
+  if (!tgUser) { el.innerHTML = `<div class="nf"><div class="nf-icon">🔍</div>Откройте через Telegram</div>`; return; }
+  el.innerHTML = loader();
   try {
-    const res = await apiGet('getPlayer', { telegram_id: telegramUser.id });
-    if (!res.ok) {
-      el.innerHTML = '<div class="not-found"><div style="font-size:36px;margin-bottom:10px">🤷</div>Вас нет в базе.<br>Попросите администратора добавить вас.</div>'; return;
-    }
+    const res = await apiGet('getMyData', {telegram_id: tgUser.id});
+    if (!res.ok) { el.innerHTML = `<div class="nf"><div class="nf-icon">🤷</div>Вас нет в базе.<br>Попросите администратора добавить вас.</div>`; return; }
     const p = res.data;
-    const color = COLORS[(p.id-1) % COLORS.length];
+    const color = COLORS[(p.id-1)%COLORS.length];
     const ini = p.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    el.innerHTML = `<div class="my-hero">
-      <div style="display:flex;justify-content:center;margin-bottom:12px">
-        <div class="avatar" style="background:${color};width:64px;height:64px;font-size:24px">${ini}</div>
-      </div>
-      <div class="my-name">${p.full_name}</div>
-      <div class="my-rank-num">#${p.rank}</div>
-      <div class="my-rank-label">место из ${p.total} игроков</div>
-      <div class="my-grid">
-        <div class="my-stat"><div class="my-stat-val" style="color:var(--green)">${p.wins}</div><div class="my-stat-lbl">Победы</div></div>
-        <div class="my-stat"><div class="my-stat-val">${p.games}</div><div class="my-stat-lbl">Партии</div></div>
-        <div class="my-stat"><div class="my-stat-val" style="color:var(--gold)">${p.winrate}%</div><div class="my-stat-lbl">Win Rate</div></div>
-      </div>
-    </div>`;
-  } catch(e) { el.innerHTML = '<div class="not-found">⚠️ Ошибка</div>'; }
-}
 
-// ── History ────────────────────────────────────────────
-async function loadHistory() {
-  const el = document.getElementById('history-list');
-  el.innerHTML = '<div class="loader"><div class="spinner"></div><div class="loader-text">Загружаем…</div></div>';
-  try {
-    const res = await apiGet('getGames');
-    if (!res.ok || !res.data || !res.data.length) {
-      el.innerHTML = '<div class="empty"><div class="empty-icon">📜</div>Партий пока нет</div>'; return;
+    // Прогресс печатей (9 = 1 билет)
+    const free    = p.free_stamps || 0;
+    const inCycle = free % 9;
+    const dotsHtml = Array.from({length:9},(_,i)=>
+      `<div class="s-dot ${i<inCycle?'filled':'empty'}">${i<inCycle?'🔖':''}</div>`).join('');
+
+    // История FIQ
+    let fiqHistHtml = '';
+    if (p.fiq_history && p.fiq_history.length) {
+      fiqHistHtml = `<div class="fiq-history">
+        <div class="fiq-hist-title">Последние игры</div>
+        ${p.fiq_history.map(h=>`
+          <div class="fiq-row">
+            <span style="color:var(--muted);font-size:var(--f-small)">${fmtDate(h.date)}</span>
+            <span>${placeIcon(h.place)} ${h.place} место</span>
+            <span style="color:var(--green);font-weight:700">${h.fiq} FIQ</span>
+            <span style="color:var(--gold)">${h.stamps}🔖</span>
+          </div>`).join('')}
+      </div>`;
     }
-    el.innerHTML = res.data.map((g,i) => `
-      <div class="game-entry" style="animation:slideIn .3s ease ${i*0.04}s both">
-        <div class="game-header">
-          <div class="game-winner"><span style="font-size:18px">👑</span><span class="game-winner-name">${g.winner_name}</span></div>
-          <span class="game-date">${fmtDate(g.date)}</span>
+
+    el.innerHTML = `
+      <div class="hero">
+        <div style="display:flex;justify-content:center;margin-bottom:10px">
+          <div class="ava" style="background:${color};width:56px;height:56px;font-size:20px">${ini}</div>
         </div>
-        <div class="game-players">
-          ${g.participants.map(pid=>`<span class="gp-chip ${String(pid)===String(g.winner_id)?'w':''}">${String(pid)===String(g.winner_id)?'👑 ':''}ID ${pid}</span>`).join('')}
+        <div class="hero-name">${p.full_name}</div>
+        <div class="mgrid">
+          <div class="mstat"><div class="mval" style="color:var(--gold)">${p.total_stamps}</div><div class="mlbl">Печатей</div></div>
+          <div class="mstat"><div class="mval" style="color:var(--blue)">${p.tickets}</div><div class="mlbl">Билетов</div></div>
+          <div class="mstat"><div class="mval" style="color:var(--green)">${p.avg_fiq}</div><div class="mlbl">Ср. FIQ</div></div>
         </div>
-      </div>`).join('');
-  } catch(e) { el.innerHTML = '<div class="empty">⚠️ Ошибка</div>'; }
+      </div>
+      <div class="stamps-display">
+        <div class="stamps-title">Прогресс к билету (9 🔖 = 1 🎫)</div>
+        <div class="stamps-grid">${dotsHtml}</div>
+        <div style="font-size:var(--f-small);color:var(--muted);margin-top:8px">${inCycle} из 9 до следующего билета</div>
+      </div>
+      <div class="mstat" style="background:var(--s1);padding:12px;border-radius:10px;margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between">
+          <span style="color:var(--muted);font-size:var(--f-small);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Место в рейтинге</span>
+          <span style="font-size:var(--f-small);color:var(--muted)">${p.total_players} игроков</span>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:8px">
+          <div><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold)">#${p.rank_stamps}</span><div style="font-size:var(--f-small);color:var(--muted)">по печатям</div></div>
+          <div><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green)">#${p.rank_fiq}</span><div style="font-size:var(--f-small);color:var(--muted)">по FIQ</div></div>
+          <div><span style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--text)">${p.games_played}</span><div style="font-size:var(--f-small);color:var(--muted)">игр</div></div>
+        </div>
+      </div>
+      ${fiqHistHtml}`;
+  } catch(e) { el.innerHTML = `<div class="nf">⚠️ Ошибка загрузки</div>`; }
 }
 
-function fmtDate(d) {
-  try { return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short',year:'numeric'}); }
-  catch(e) { return d||''; }
+function placeIcon(p) { return p==1?'🥇':p==2?'🥈':p==3?'🥉':''; }
+
+// ── FIQ ───────────────────────────────────────────────────────
+async function loadFiq() {
+  document.getElementById('fiq-list').innerHTML = loader();
+  try {
+    const res = await apiGet('getFIQ');
+    const el  = document.getElementById('fiq-list');
+    if (!res.ok || !res.data?.length) { el.innerHTML = empty('🧠','Нет данных'); return; }
+    const maxFiq = res.data[0].avg_fiq || 1;
+    el.innerHTML = res.data.map((p,i) => {
+      const color  = COLORS[(p.id-1)%COLORS.length];
+      const ini    = (p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      const pct    = Math.round(p.avg_fiq / maxFiq * 100);
+      const ri     = i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1)+'.';
+      const delay  = i*0.04;
+      return `<div class="fiq-card" style="animation-delay:${delay}s">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;min-width:28px;color:var(--muted)">${ri}</span>
+          <div class="ava" style="background:${color};width:38px;height:38px;font-size:13px;flex-shrink:0">${ini}</div>
+          <div style="flex:1;min-width:0">
+            <div class="pname">${p.full_name}</div>
+            <div class="fiq-bar-bg"><div class="fiq-bar" style="width:${pct}%;background:${color}"></div></div>
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green)">${p.avg_fiq}</div>
+            <div style="font-size:var(--f-small);color:var(--muted)">${p.games_played} игр</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) { document.getElementById('fiq-list').innerHTML = empty('⚠️','Ошибка'); }
 }
 
-// ── Admin ──────────────────────────────────────────────
-async function loadAdminPanel() {
-  const res = await apiPost({ action: 'getAllPlayers' });
-  if (!res.ok) { showToast('⛔ ' + (res.error||'Нет прав'), 'err'); return; }
+// ── ADMIN ─────────────────────────────────────────────────────
+async function loadAdmin() {
+  // Сегодняшняя дата по умолчанию
+  document.getElementById('game-date').value = new Date().toISOString().slice(0,10);
+
+  const res = await apiPost({ action:'getAllPlayers' });
+  if (!res.ok) { showToast('⛔ '+(res.error||'Нет прав'),'err'); return; }
   allPlayers = res.data;
-  const opts = allPlayers.map(p=>`<option value="${p.id}">${p.full_name} (${p.wins} побед)</option>`).join('');
-  document.getElementById('sel-winner').innerHTML = opts;
-  document.getElementById('sel-game-winner').innerHTML = opts;
-  document.getElementById('participants-grid').innerHTML = allPlayers.map(p=>`
-    <div class="ptoggle" id="pt-${p.id}" onclick="toggleP(${p.id})">
-      <div style="font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.full_name.split(' ')[0]}</div>
-      <div style="font-size:10px;color:var(--muted)">🏆${p.wins}</div>
+
+  // Заполнить билдер результатов
+  buildResultsForm();
+
+  // Заполнить селект управления
+  document.getElementById('sel-manage').innerHTML =
+    '<option value="">— выберите игрока —</option>' +
+    allPlayers.map(p=>`<option value="${p.id}">${p.full_name} | 🔖${p.total_stamps} | 🎫${p.tickets}</option>`).join('');
+
+  document.getElementById('manage-detail').style.display = 'none';
+}
+
+function buildResultsForm() {
+  document.getElementById('results-builder').innerHTML = allPlayers.map(p=>`
+    <div class="res-player">
+      <div class="ava" style="background:${COLORS[(p.id-1)%COLORS.length]};width:32px;height:32px;font-size:12px;color:#000">
+        ${p.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}
+      </div>
+      <div class="res-name">${p.full_name}</div>
+      <select class="place-sel" id="place-${p.id}">
+        <option value="">—</option>
+        <option value="1">1 место</option>
+        <option value="2">2 место</option>
+        <option value="3">3 место</option>
+        <option value="4">4+</option>
+      </select>
+      <input class="fiq-inp" id="fiq-${p.id}" type="number" placeholder="FIQ" step="0.01" min="0">
     </div>`).join('');
 }
 
-let selP = new Set();
-function toggleP(id) {
-  const el = document.getElementById('pt-'+id);
-  if (selP.has(id)) { selP.delete(id); el.classList.remove('on'); }
-  else { selP.add(id); el.classList.add('on'); }
+function onSelectPlayer() {
+  const id  = document.getElementById('sel-manage').value;
+  const det = document.getElementById('manage-detail');
+  if (!id) { det.style.display='none'; return; }
+  const p = allPlayers.find(x=>String(x.id)===String(id));
+  if (!p) return;
+  document.getElementById('edit-name').value    = p.full_name;
+  document.getElementById('edit-tgid').value    = p.telegram_id || '';
+  document.getElementById('edit-tickets').value = p.tickets || 0;
+  det.style.display = 'block';
+}
+
+async function adminRecordGame() {
+  const date  = document.getElementById('game-date').value;
+  const notes = document.getElementById('game-notes').value.trim();
+  const results = [];
+  allPlayers.forEach(p => {
+    const place = document.getElementById('place-'+p.id)?.value;
+    const fiq   = document.getElementById('fiq-'+p.id)?.value;
+    if (place && fiq) {
+      results.push({ player_id:p.id, player_name:p.full_name, place:parseInt(place), fiq:parseFloat(fiq) });
+    }
+  });
+  if (!results.length) { showToast('⚠️ Укажите хотя бы 1 участника','err'); return; }
+  if (!date) { showToast('⚠️ Укажите дату','err'); return; }
+  const res = await apiPost({ action:'recordGame', date, notes, results });
+  if (res.ok) {
+    showToast(`✅ Игра #${res.data.game_id} записана! ${res.data.participants} участников`,'ok');
+    document.getElementById('game-notes').value = '';
+    loadAdmin();
+  } else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
 async function adminAddPlayer() {
   const name = document.getElementById('inp-name').value.trim();
-  const tgId = document.getElementById('inp-tgid').value.trim();
+  const tgid = document.getElementById('inp-tgid').value.trim();
   if (!name) { showToast('⚠️ Введите имя','err'); return; }
-  const res = await apiPost({ action:'addPlayer', full_name:name, player_telegram_id:tgId });
+  const res = await apiPost({ action:'addPlayer', full_name:name, telegram_id_player:tgid });
   if (res.ok) {
     showToast(`✅ Добавлен: ${name}`,'ok');
     document.getElementById('inp-name').value='';
     document.getElementById('inp-tgid').value='';
-    loadAdminPanel();
+    loadAdmin();
   } else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-async function adminAddWin() {
-  const id = document.getElementById('sel-winner').value;
-  const res = await apiPost({ action:'addWin', player_id:id });
-  if (res.ok) { showToast(`🏆 ${res.data.full_name} — ${res.data.wins} побед`,'ok'); loadAdminPanel(); }
+async function adminEditPlayer() {
+  const id      = document.getElementById('sel-manage').value;
+  const name    = document.getElementById('edit-name').value.trim();
+  const tgid    = document.getElementById('edit-tgid').value.trim();
+  const tickets = document.getElementById('edit-tickets').value;
+  if (!id) return;
+  const res = await apiPost({ action:'editPlayer', player_id:id, full_name:name, telegram_id_player:tgid, tickets });
+  if (res.ok) { showToast('✅ Сохранено','ok'); loadAdmin(); }
   else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-async function adminAddGame() {
-  const wId = parseInt(document.getElementById('sel-game-winner').value);
-  const pp  = Array.from(selP);
-  if (!pp.includes(wId)) pp.push(wId);
-  if (pp.length < 2) { showToast('⚠️ Отметьте минимум 2 участников','err'); return; }
-  const res = await apiPost({ action:'addGame', winner_id:wId, participants:pp });
-  if (res.ok) {
-    showToast(`✅ Партия #${res.data.game_id} сохранена!`,'ok');
-    selP.clear();
-    document.querySelectorAll('.ptoggle').forEach(el=>el.classList.remove('on'));
-    loadAdminPanel();
-  } else showToast('❌ '+(res.error||'Ошибка'),'err');
+async function adminUseTicket() {
+  const id = document.getElementById('sel-manage').value;
+  if (!id) return;
+  const p = allPlayers.find(x=>String(x.id)===String(id));
+  if (p && p.tickets <= 0) { showToast('⚠️ Нет билетов','err'); return; }
+  const res = await apiPost({ action:'useTicket', player_id:id });
+  if (res.ok) { showToast('🎫 '+res.message,'ok'); loadAdmin(); }
+  else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-// ── Toast ──────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────
+function loader() { return '<div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div>'; }
+function empty(icon,txt) { return `<div class="nf"><div class="nf-icon">${icon}</div>${txt}</div>`; }
+function fmtDate(d) { try{return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}catch(e){return d||''} }
+
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = 'toast show '+type;
-  clearTimeout(t._t);
-  t._t = setTimeout(()=>{ t.className='toast'; }, 3000);
+  t.textContent=msg; t.className='toast show '+type;
+  clearTimeout(t._t); t._t=setTimeout(()=>{t.className='toast'},3000);
 }
 
-// ── Init ───────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────
 function init() {
-  if (telegramUser) document.getElementById('admin-tab').style.display = 'block';
+  if (tgUser) document.getElementById('admin-tab').style.display='block';
   if (API_URL.includes('ВСТАВЬТЕ')) {
-    document.getElementById('leaderboard-list').innerHTML =
-      '<div style="background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:16px;font-size:13px;color:var(--gold);line-height:1.8">' +
-      '<strong>⚙️ Настройка</strong><br><br>Замените в коде:<br><code>API_URL = \'ВСТАВЬТЕ_URL...\'</code><br><br>на URL вашего Apps Script.</div>';
+    document.getElementById('top-list').innerHTML =
+      '<div style="background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);border-radius:10px;padding:16px;font-size:var(--f-small);color:var(--gold);line-height:1.8">' +
+      '<strong>⚙️ Настройка</strong><br><br>Замените в коде строку:<br><code>API_URL = \'ВСТАВЬТЕ_URL...\'</code><br>на URL вашего Apps Script.</div>';
     return;
   }
-  loadLeaderboard();
+  loadTop();
 }
-
 init();
 </script>
 </body>
