@@ -341,7 +341,7 @@ body {
 // ══════════════════════════════════════════════════════════
 // НАСТРОЙКА — вставьте ваш URL Apps Script здесь:
 // ══════════════════════════════════════════════════════════
-const API_URL = 'https://script.google.com/macros/s/AKfycbw_8GRLDcDxCjTN_5R1fc5srjfqQKKVfk3yG9dROli-2wfH_2u6I2i5cJi2IKOlUGRa/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbwOp5VQCsBG9cj2eu5suzb_VKFB6ogPOhS4-yOBK1WhQ_J37XJnhyrncuGu5JdXBUE/exec';
 // Пример: 'https://script.google.com/macros/s/AKfycb.../exec'
 
 // ══════════════════════════════════════════════════════════
@@ -366,12 +366,30 @@ if (tg) {
 }
 
 // ─── API helpers ──────────────────────────────────────
-async function apiGet(action, params = {}) {
-  const url = new URL(API_URL);
-  url.searchParams.set('action', action);
-  Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
-  const r = await fetch(url.toString());
-  return r.json();
+function apiGet(action, params = {}) {
+  return new Promise((resolve) => {
+    const cbName = 'cb_' + Date.now();
+    const url = new URL(API_URL);
+    url.searchParams.set('action', action);
+    url.searchParams.set('callback', cbName);
+    Object.entries(params).forEach(([k,v]) => url.searchParams.set(k, v));
+
+    window[cbName] = (data) => {
+      resolve(data);
+      delete window[cbName];
+      const s = document.getElementById('_jsonp');
+      if (s) s.remove();
+    };
+
+    const script = document.createElement('script');
+    script.id  = '_jsonp';
+    script.src = url.toString();
+    script.onerror = () => {
+      resolve({ ok: false, error: 'network error' });
+      delete window[cbName];
+    };
+    document.head.appendChild(script);
+  });
 }
 
 async function apiPost(body) {
