@@ -306,8 +306,9 @@ function topCard(p) {
 
   // Рисуем 9 кружков печатей
   const free  = p.free_stamps || 0;
-  const dots  = Array.from({length:9},(_,i)=>
-    `<div class="s-dot ${i<free%9?'filled':'empty'}">${i<free%9?'🔖':''}</div>`).join('');
+const inCycle = free % 9;
+const dots = Array.from({length:9},(_,i)=>
+  `<div class="s-dot ${i<inCycle?'filled':'empty'}"></div>`).join('');
 
   const ticketHtml = p.tickets > 0
     ? `<div class="ticket-badge">🎫 ${p.tickets} билет${p.tickets>1?p.tickets>4?'ов':'а':''}</div>` : '';
@@ -317,7 +318,8 @@ function topCard(p) {
     <div class="ava" style="background:${color}">${ini}</div>
     <div class="pinfo">
       <div class="pname">${p.full_name}</div>
-      <div class="stamps-row">${dots}</div>
+      <<div class="stamps-row" style="margin-top:5px">${dots}</div>
+      <div style="font-size:var(--f-small);color:var(--muted);margin-top:3px">${free} печат${stampWord(free)}</div>
       ${ticketHtml}
     </div>
     <div class="pright">
@@ -544,7 +546,16 @@ function showToast(msg, type='') {
 }
 
 // ── Init ──────────────────────────────────────────────────────
-function init() {
+  function stampWord(n) {
+  const m = n % 10;
+  const h = n % 100;
+  if (h >= 11 && h <= 19) return 'ей';
+  if (m === 1) return 'ь';
+  if (m >= 2 && m <= 4) return 'и';
+  return 'ей';
+}
+  
+  function init() {
   if (tgUser) document.getElementById('admin-tab').style.display='block';
   if (API_URL.includes('ВСТАВЬТЕ')) {
     document.getElementById('top-list').innerHTML =
