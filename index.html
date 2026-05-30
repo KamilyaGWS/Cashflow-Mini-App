@@ -304,11 +304,11 @@ function topCard(p) {
   const ini   = (p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const delay = Math.min(p.rank-1,9)*0.04;
 
-  // Рисуем 9 кружков печатей
-  const free  = p.free_stamps || 0;
-const inCycle = free % 9;
-const dots = Array.from({length:9},(_,i)=>
-  `<div class="s-dot ${i<inCycle?'filled':'empty'}"></div>`).join('');
+  // Рисуем 9 кружков печатей (прогресс внутри текущего цикла)
+  const free    = p.free_stamps || 0;
+  const inCycle = free % 9; // сколько печатей в текущем цикле (0-8)
+  const dots    = Array.from({length:9},(_,i)=>
+    `<div class="s-dot ${i<inCycle?'filled':'empty'}"></div>`).join('');
 
   const ticketHtml = p.tickets > 0
     ? `<div class="ticket-badge">🎫 ${p.tickets} билет${p.tickets>1?p.tickets>4?'ов':'а':''}</div>` : '';
@@ -318,16 +318,23 @@ const dots = Array.from({length:9},(_,i)=>
     <div class="ava" style="background:${color}">${ini}</div>
     <div class="pinfo">
       <div class="pname">${p.full_name}</div>
-      <<div class="stamps-row" style="margin-top:5px">${dots}</div>
-      <div style="font-size:var(--f-small);color:var(--muted);margin-top:3px">${free} печат${stampWord(free)}</div>
+      <div class="stamps-row">${dots}</div>
       ${ticketHtml}
     </div>
     <div class="pright">
-      <div class="pbig" style="color:var(--gold)">${p.total_stamps}</div>
-      <div class="psmall">печатей</div>
+      <div class="pbig" style="color:var(--gold)">${free}</div>
+      <div class="psmall">печат${stampWord(free)}</div>
       ${p.avg_fiq > 0 ? `<div class="psmall" style="color:var(--green);margin-top:2px">${p.avg_fiq} FIQ</div>` : ''}
     </div>
   </div>`;
+}
+
+function stampWord(n) {
+  const m = n % 10, h = n % 100;
+  if (h>=11&&h<=19) return 'ей';
+  if (m===1) return 'ь';
+  if (m>=2&&m<=4) return 'и';
+  return 'ей';
 }
 
 // ── МОИ ИГРЫ ──────────────────────────────────────────────────
@@ -346,7 +353,7 @@ async function loadMy() {
     const free    = p.free_stamps || 0;
     const inCycle = free % 9;
     const dotsHtml = Array.from({length:9},(_,i)=>
-      `<div class="s-dot ${i<inCycle?'filled':'empty'}">${i<inCycle?'🔖':''}</div>`).join('');
+      `<div class="s-dot ${i<inCycle?'filled':'empty'}"></div>`).join('');
 
     // История FIQ
     let fiqHistHtml = '';
@@ -370,7 +377,7 @@ async function loadMy() {
         </div>
         <div class="hero-name">${p.full_name}</div>
         <div class="mgrid">
-          <div class="mstat"><div class="mval" style="color:var(--gold)">${p.total_stamps}</div><div class="mlbl">Печатей</div></div>
+          <div class="mstat"><div class="mval" style="color:var(--gold)">${free}</div><div class="mlbl">Печатей</div></div>
           <div class="mstat"><div class="mval" style="color:var(--blue)">${p.tickets}</div><div class="mlbl">Билетов</div></div>
           <div class="mstat"><div class="mval" style="color:var(--green)">${p.avg_fiq}</div><div class="mlbl">Ср. FIQ</div></div>
         </div>
@@ -378,7 +385,7 @@ async function loadMy() {
       <div class="stamps-display">
         <div class="stamps-title">Прогресс к билету (9 🔖 = 1 🎫)</div>
         <div class="stamps-grid">${dotsHtml}</div>
-        <div style="font-size:var(--f-small);color:var(--muted);margin-top:8px">${inCycle} из 9 до следующего билета</div>
+        <div style="font-size:var(--f-small);color:var(--muted);margin-top:8px">${inCycle} из 9 — осталось ${9-inCycle} до следующего билета</div>
       </div>
       <div class="mstat" style="background:var(--s1);padding:12px;border-radius:10px;margin-bottom:8px">
         <div style="display:flex;justify-content:space-between">
@@ -546,16 +553,7 @@ function showToast(msg, type='') {
 }
 
 // ── Init ──────────────────────────────────────────────────────
-  function stampWord(n) {
-  const m = n % 10;
-  const h = n % 100;
-  if (h >= 11 && h <= 19) return 'ей';
-  if (m === 1) return 'ь';
-  if (m >= 2 && m <= 4) return 'и';
-  return 'ей';
-}
-  
-  function init() {
+function init() {
   if (tgUser) document.getElementById('admin-tab').style.display='block';
   if (API_URL.includes('ВСТАВЬТЕ')) {
     document.getElementById('top-list').innerHTML =
