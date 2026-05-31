@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cashflow by Gulfiya</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --c1:#2C3531;--c2:#116466;--c3:#D9B08C;--c4:#FFCB9A;--c5:#D1E8E2;
@@ -21,7 +21,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;f
 /* HEADER */
 .header{background:linear-gradient(135deg,#0e1a17,#1a2d2a 60%,#116466);border-bottom:1px solid var(--border);padding:12px 18px 10px;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(17,100,102,.3)}
 .hrow{display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:18px;font-weight:700;letter-spacing:1px;color:var(--c4);line-height:1.2}
+.logo{font-family:'Cinzel',serif;font-size:18px;font-weight:500;letter-spacing:2px;color:var(--c4);line-height:1.2}
 .logo-sub{font-size:var(--f-sm);letter-spacing:3px;color:var(--c2);text-transform:uppercase;margin-top:1px;font-weight:500}
 .live{display:flex;align-items:center;gap:4px;background:rgba(17,100,102,.25);border:1px solid rgba(17,100,102,.5);color:var(--c2);font-size:var(--f-sm);font-weight:700;padding:4px 10px;border-radius:20px}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--c2);animation:blink 1.5s infinite}
@@ -461,7 +461,7 @@ body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;f
 <div class="toast" id="toast"></div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbzLOpP1caEB5GDz2VHvjTUh3vV2DSbSJN13rWpSz8kxqSpQD3SLlsw95RKLu-fxw7Ld/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbz4kg59wnvTcD2iaB0IueeyWmri4oswxUUXLZyu-4Wb5O2AwJK12fcTsIS4cmSWEMkl/exec';
 
 const COLORS=['#2E7D8A','#D9B08C','#116466','#5D4037','#37474F','#6A1B9A','#558B2F','#AD1457','#00695C','#1565C0','#827717','#4E342E'];
 const tg=window.Telegram?.WebApp;
@@ -785,11 +785,12 @@ async function loadGames(){
       const g=grouped[d];
       const rowsHtml=g.rows.map((r,i)=>{
         const rid=`${g.game_id}_${i}`;
-        return `<tr id="tr-${rid}">
+        const pid=String(r.player_id||'');
+        return `<tr id="tr-${rid}" data-pid="${pid}" data-gid="${g.game_id}" data-idx="${i}">
           <td><span class="vv-${rid}">${r.player_name}</span><input class="edit-cell-inp" id="en-${rid}" value="${r.player_name}" style="display:none"></td>
-          <td><span class="vv-${rid}"><span class="place-badge">${placeIcon(r.place)||r.place}</span></span><input class="edit-cell-inp" id="ep-${rid}" value="${r.place}" type="number" min="1" max="10" style="display:none;width:60px"></td>
+          <td><span class="vv-${rid}"><span class="place-badge">${placeIcon(r.place)||r.place}</span></span><select class="edit-cell-inp" id="ep-${rid}" style="display:none;width:80px"><option value="1" ${r.place==1?'selected':''}>🥇 1</option><option value="2" ${r.place==2?'selected':''}>🥈 2</option><option value="3" ${r.place==3?'selected':''}>🥉 3</option><option value="4" ${r.place>=4?'selected':''}>4+</option></select></td>
           <td><span class="vv-${rid}" style="color:var(--c3);font-weight:700">${r.stamps}🔖</span></td>
-          <td><span class="vv-${rid}" style="color:var(--c2);font-weight:700">${r.fiq}</span><input class="edit-cell-inp" id="ef-${rid}" value="${r.fiq}" type="number" step="0.01" style="display:none;width:80px"></td>
+          <td><span class="vv-${rid}" style="color:var(--c2);font-weight:700">${r.fiq}</span><input class="edit-cell-inp" id="ef-${rid}" value="${r.fiq}" type="number" step="0.01" style="display:none;width:90px"></td>
         </tr>`;
       }).join('');
       return `<div class="game-group">
@@ -822,7 +823,7 @@ async function loadGames(){
             </div>
           </div>
           <div class="game-actions">
-            <button class="btn btn-teal btn-sm" onclick="startEditGame('${g.game_id}')">✏️ Редактировать</button>
+            <button class="btn btn-teal btn-sm" id="edit-${g.game_id}" onclick="startEditGame('${g.game_id}')">✏️ Редактировать</button>
             <button class="btn btn-peach btn-sm" id="save-${g.game_id}" style="display:none" onclick="saveEditGame('${g.game_id}')">💾 Сохранить всё</button>
           </div>
         </div>
@@ -845,28 +846,52 @@ function startEditGame(gid){
   tbody.querySelectorAll('tr').forEach((tr,i)=>{
     const rid=`${gid}_${i}`;
     tr.querySelectorAll('.vv-'+rid).forEach(el=>el.style.display='none');
-    ['en','ep','ef'].forEach(p=>{const el=document.getElementById(`${p}-${rid}`);if(el) el.style.display='';});
+    ['en','ep','ef'].forEach(p=>{const el=document.getElementById(`${p}-${rid}`);if(el) el.style.display='inline-block';});
   });
-  document.getElementById('save-'+gid).style.display='inline-block';
+  const saveBtn=document.getElementById('save-'+gid);
+  const editBtn=document.getElementById('edit-'+gid);
+  if(saveBtn) saveBtn.style.display='inline-block';
+  if(editBtn) editBtn.style.display='none';
 }
 
 async function saveEditGame(gid){
   const tbody=document.getElementById('tbody-'+gid);
   if(!tbody) return;
   const rows=tbody.querySelectorAll('tr');
+  const saveBtn=document.getElementById('save-'+gid);
+  if(saveBtn){ saveBtn.textContent='⏳ Сохраняем…'; saveBtn.disabled=true; }
   let allOk=true;
   for(let i=0;i<rows.length;i++){
+    const tr=rows[i];
     const rid=`${gid}_${i}`;
-    const name=document.getElementById(`en-${rid}`)?.value;
-    const place=document.getElementById(`ep-${rid}`)?.value;
-    const fiq=document.getElementById(`ef-${rid}`)?.value;
-    if(!name||!place||!fiq){allOk=false;continue;}
-    // Найти player_id по имени
-    const p=allPlayers.find(x=>x.full_name===name);
-    await apiPost({action:'editGameRow',game_id:gid,row_index:i,player_name:name,player_id:p?.id||'',place:parseInt(place),fiq:parseFloat(fiq)});
+    const pid=tr.dataset.pid||'';
+    const name=document.getElementById(`en-${rid}`)?.value||'';
+    const place=document.getElementById(`ep-${rid}`)?.value||'';
+    const fiq=document.getElementById(`ef-${rid}`)?.value||'';
+    if(!place||!fiq){ allOk=false; continue; }
+    const res=await apiPost({action:'editGameRow',game_id:String(gid),row_index:i,player_name:name,player_id:pid,place:parseInt(place),fiq:parseFloat(fiq)});
+    if(!res.ok) allOk=false;
   }
-  showToast(allOk?'✅ Сохранено':'⚠️ Сохранено с ошибками',allOk?'ok':'warn');
-  loadGames();
+  if(saveBtn){ saveBtn.textContent='💾 Сохранить всё'; saveBtn.disabled=false; }
+  showToast(allOk?'✅ Данные сохранены':'⚠️ Сохранено с ошибками — проверьте Google Sheets',allOk?'ok':'warn');
+  // Не перезагружаем страницу — просто скрываем поля и показываем значения
+  rows.forEach((tr,i)=>{
+    const rid=`${gid}_${i}`;
+    const name=document.getElementById(`en-${rid}`)?.value||'';
+    const place=document.getElementById(`ep-${rid}`)?.value||'';
+    const fiq=document.getElementById(`ef-${rid}`)?.value||'';
+    // Обновить отображаемые значения
+    const spans=tr.querySelectorAll('.vv-'+rid);
+    if(spans[0]) spans[0].textContent=name;
+    if(spans[1]) spans[1].innerHTML=`<span class="place-badge">${placeIcon(parseInt(place))||place}</span>`;
+    if(spans[3]) { spans[3].textContent=fiq; spans[3].style.color='var(--c2)'; spans[3].style.fontWeight='700'; }
+    // Показать spans, скрыть inputs
+    tr.querySelectorAll('.vv-'+rid).forEach(el=>el.style.display='');
+    ['en','ep','ef'].forEach(p=>{const el=document.getElementById(`${p}-${rid}`);if(el) el.style.display='none';});
+  });
+  const editBtn=document.getElementById('edit-'+gid);
+  if(saveBtn) saveBtn.style.display='none';
+  if(editBtn) editBtn.style.display='inline-block';
 }
 
 function toggleAddRow(gid,date){
@@ -880,9 +905,17 @@ async function saveAddRow(gid,date){
   const fiq=document.getElementById(`arf-${gid}`)?.value;
   if(!pid||!fiq){showToast('⚠️ Заполните все поля','err');return;}
   const p=allPlayers.find(x=>String(x.id)===String(pid));
+  const saveBtn=document.querySelector(`#addrow-${gid} .btn-peach`);
+  if(saveBtn){saveBtn.textContent='⏳ Сохраняем…';saveBtn.disabled=true;}
   const res=await apiPost({action:'addGameRow',game_id:parseInt(gid),date,player_id:pid,player_name:p?.full_name||'',place:parseInt(place),fiq:parseFloat(fiq)});
-  if(res.ok){showToast('✅ Запись добавлена','ok');loadGames();}
-  else showToast('❌ '+(res.error||'Ошибка'),'err');
+  if(saveBtn){saveBtn.textContent='💾 СОХРАНИТЬ';saveBtn.disabled=false;}
+  if(res.ok){
+    showToast('✅ Запись добавлена','ok');
+    // Закрыть форму и перезагрузить только список игр
+    const form=document.getElementById('addrow-'+gid);
+    if(form){form.classList.remove('open');document.getElementById(`arf-${gid}`).value='';}
+    loadGames();
+  }else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
 // HELPERS
