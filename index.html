@@ -5,187 +5,195 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Cashflow by Gulfiya</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  /* Цвета из палитры Sirin Labs */
-  --c1: #2C3531;   /* тёмно-серо-зелёный — основной фон */
-  --c2: #116466;   /* насыщенный бирюзовый — акцент */
-  --c3: #D9B08C;   /* тёплый персиковый — золото/печати */
-  --c4: #FFCB9A;   /* светлый персиковый — highlights */
-  --c5: #D1E8E2;   /* бледная мята — мягкий акцент */
-  --bg:  #1a211e;
-  --s1:  #232d2a;
-  --s2:  #2c3531;
-  --border: rgba(17,100,102,.35);
-  --border2: rgba(209,184,140,.2);
-  --text: #D1E8E2;
-  --muted: #7a9e9a;
-  /* Типографика — только 3 размера */
-  --f-lg: 15px;   /* основной текст */
-  --f-md: 12px;   /* подписи, chips */
-  --f-sm: 10px;   /* мелкие метки */
+:root{
+  --c1:#2C3531;--c2:#116466;--c3:#D9B08C;--c4:#FFCB9A;--c5:#D1E8E2;
+  --bg:#1a211e;--s1:#232d2a;--s2:#2c3531;
+  --border:rgba(17,100,102,.35);--border2:rgba(209,184,140,.2);
+  --text:#D1E8E2;--muted:#7a9e9a;
+  --f-lg:15px;--f-md:13px;--f-sm:11px;
+  --font:'Roboto',sans-serif;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:var(--f-lg)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:var(--font)}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;font-size:var(--f-lg);font-weight:400}
 
-/* ── HEADER ────────────────────────────────────────────────── */
-.header{
-  background:linear-gradient(135deg,#0e1a17 0%,#1a2d2a 60%,#116466 100%);
-  border-bottom:1px solid var(--border);
-  padding:12px 18px 10px; position:sticky; top:0; z-index:200;
-  box-shadow:0 2px 20px rgba(17,100,102,.3);
-}
+/* HEADER */
+.header{background:linear-gradient(135deg,#0e1a17,#1a2d2a 60%,#116466);border-bottom:1px solid var(--border);padding:12px 18px 10px;position:sticky;top:0;z-index:200;box-shadow:0 2px 20px rgba(17,100,102,.3)}
 .hrow{display:flex;align-items:center;justify-content:space-between}
-.logo{font-family:'Cinzel',serif;font-weight:500;font-size:18px;letter-spacing:2px;color:var(--c4);line-height:1.2}
-.logo-sub{font-family:'Cinzel',serif;font-size:var(--f-sm);letter-spacing:4px;color:var(--c2);text-transform:uppercase;margin-top:1px}
-.live{display:flex;align-items:center;gap:4px;background:rgba(17,100,102,.25);border:1px solid rgba(17,100,102,.5);color:var(--c2);font-size:var(--f-sm);font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.5px}
+.logo{font-size:18px;font-weight:700;letter-spacing:1px;color:var(--c4);line-height:1.2}
+.logo-sub{font-size:var(--f-sm);letter-spacing:3px;color:var(--c2);text-transform:uppercase;margin-top:1px;font-weight:500}
+.live{display:flex;align-items:center;gap:4px;background:rgba(17,100,102,.25);border:1px solid rgba(17,100,102,.5);color:var(--c2);font-size:var(--f-sm);font-weight:700;padding:4px 10px;border-radius:20px}
 .live-dot{width:5px;height:5px;border-radius:50%;background:var(--c2);animation:blink 1.5s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 
-/* ── TABS ──────────────────────────────────────────────────── */
-.tabs{display:flex;padding:0 12px;border-bottom:1px solid var(--border);background:var(--s1);position:sticky;top:65px;z-index:199;overflow-x:auto;scrollbar-width:none;gap:0}
+/* TABS */
+.tabs{display:flex;padding:0 8px;border-bottom:1px solid var(--border);background:var(--s1);position:sticky;top:63px;z-index:199;overflow-x:auto;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{font-family:'Montserrat',sans-serif;font-size:var(--f-md);font-weight:700;padding:10px 14px;cursor:pointer;white-space:nowrap;color:var(--muted);border:none;background:none;transition:all .2s;flex-shrink:0;letter-spacing:.5px;text-transform:uppercase;border-bottom:2px solid transparent;position:relative}
+.tab{font-size:var(--f-sm);font-weight:700;padding:10px 12px;cursor:pointer;white-space:nowrap;color:var(--muted);border:none;background:none;transition:all .2s;flex-shrink:0;letter-spacing:.3px;text-transform:uppercase;border-bottom:2px solid transparent}
 .tab.active{color:var(--c4);border-bottom-color:var(--c3)}
 .tab-admin{display:none}
 
-/* ── VIEWS ─────────────────────────────────────────────────── */
-.view{display:none;padding:14px 16px 90px;animation:fadeIn .2s ease}
+/* VIEWS */
+.view{display:none;padding:14px 15px 90px;animation:fadeIn .18s ease}
 .view.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 
-/* ── SECTION TITLE ─────────────────────────────────────────── */
-.stitle{font-family:'Cinzel',serif;font-size:var(--f-lg);font-weight:700;letter-spacing:2px;color:var(--c4);margin-bottom:14px;text-transform:uppercase}
+/* SECTION TITLE */
+.stitle{font-size:var(--f-lg);font-weight:700;letter-spacing:.5px;color:var(--c4);margin-bottom:14px;text-transform:uppercase}
 
-/* ── STAT STRIP ────────────────────────────────────────────── */
+/* STAT STRIP */
 .strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
 .scard{background:linear-gradient(135deg,var(--s2),var(--s1));border:1px solid var(--border2);border-radius:10px;padding:10px;text-align:center}
-.sval{font-family:'Cinzel',serif;font-size:20px;color:var(--c3)}
-.slbl{font-size:var(--f-sm);color:var(--muted);margin-top:2px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.sval{font-size:22px;font-weight:700;color:var(--c3)}
+.slbl{font-size:var(--f-sm);color:var(--muted);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
 
-/* ── PLAYER CARD ───────────────────────────────────────────── */
+/* PLAYER CARD */
 .pcard{background:linear-gradient(135deg,var(--s2),var(--s1));border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;animation:slideIn .3s ease both;position:relative;overflow:hidden}
-.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c2),transparent);opacity:0}
 .pcard.r1{border-color:var(--c3);background:linear-gradient(135deg,#1e2d22,var(--s1))}
-.pcard.r1::before,.pcard.r2::before,.pcard.r3::before{opacity:1}
 .pcard.r2{border-color:rgba(209,184,140,.5)}
 .pcard.r3{border-color:rgba(17,100,102,.7)}
 @keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:none}}
-.rank{font-family:'Cinzel',serif;font-size:var(--f-lg);min-width:26px;text-align:center;font-weight:700}
+.rank{font-size:var(--f-lg);font-weight:700;min-width:26px;text-align:center}
 .r1 .rank{color:var(--c3)}.r2 .rank{color:var(--c4)}.r3 .rank{color:var(--c2)}
 .rank.other{color:var(--muted);font-size:var(--f-md)}
-.ava{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--f-md);font-family:'Cinzel',serif;border:2px solid var(--border);color:var(--c1)}
+.ava{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--f-md);border:2px solid var(--border);color:var(--c1)}
 .pinfo{flex:1;min-width:0}
 .pname{font-weight:700;font-size:var(--f-lg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--c5)}
-.psub{font-size:var(--f-sm);color:var(--muted);margin-top:3px;font-weight:600}
+.psub{font-size:var(--f-sm);color:var(--muted);margin-top:3px;font-weight:500}
 .pright{text-align:right;flex-shrink:0}
-.pbig{font-family:'Cinzel',serif;font-size:20px;color:var(--c3)}
-.psmall{font-size:var(--f-sm);color:var(--muted);font-weight:600}
+.pbig{font-size:20px;font-weight:700;color:var(--c3)}
+.psmall{font-size:var(--f-sm);color:var(--muted);font-weight:500}
 
-/* ── STAMPS ────────────────────────────────────────────────── */
+/* STAMPS */
 .sdots{display:flex;gap:3px;margin-top:5px;flex-wrap:wrap}
 .dot{width:14px;height:14px;border-radius:50%;flex-shrink:0;transition:all .3s}
 .dot.on{background:var(--c3);box-shadow:0 0 6px rgba(217,176,140,.5)}
 .dot.off{background:var(--s2);border:1px solid var(--border)}
 .ticket-pill{display:inline-flex;align-items:center;gap:4px;background:rgba(17,100,102,.2);border:1px solid rgba(17,100,102,.4);color:var(--c2);font-size:var(--f-sm);font-weight:700;padding:2px 8px;border-radius:20px;margin-top:4px}
 
-/* ── HERO (МОИ ИГРЫ) ───────────────────────────────────────── */
+/* HERO */
 .hero{background:linear-gradient(135deg,#0e2020,#1a2d2a,#116466);border:1px solid var(--border2);border-radius:14px;padding:18px;text-align:center;margin-bottom:10px;position:relative;overflow:hidden}
 .hero::after{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(17,100,102,.15),transparent);pointer-events:none}
-.hero-ava{width:60px;height:60px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-weight:700;font-size:20px;border:2px solid var(--c3);color:var(--c1)}
-.hero-name{font-family:'Cinzel',serif;font-weight:700;font-size:var(--f-lg);color:var(--c4);margin-bottom:12px;letter-spacing:1px}
+.hero-ava{width:60px;height:60px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;border:2px solid var(--c3);color:var(--c1)}
+.hero-name{font-weight:700;font-size:var(--f-lg);color:var(--c4);margin-bottom:12px;letter-spacing:.5px}
 .mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .mstat{background:rgba(0,0,0,.25);border-radius:9px;padding:9px;text-align:center;border:1px solid var(--border)}
-.mval{font-family:'Cinzel',serif;font-size:22px;color:var(--c3)}
-.mlbl{font-size:var(--f-sm);color:var(--muted);margin-top:2px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.mval{font-size:22px;font-weight:700;color:var(--c3)}
+.mlbl{font-size:var(--f-sm);color:var(--muted);margin-top:2px;font-weight:500;text-transform:uppercase;letter-spacing:.3px}
 
-/* ── PROGRESS ──────────────────────────────────────────────── */
+/* PROGRESS */
 .progress-box{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
-.prog-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.prog-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .prog-dots{display:flex;gap:5px;flex-wrap:wrap}
 .prog-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--f-sm);font-weight:700;transition:all .3s}
 .prog-dot.on{background:var(--c3);color:var(--c1);box-shadow:0 0 8px rgba(217,176,140,.4)}
 .prog-dot.off{background:var(--s2);border:1px solid var(--border);color:var(--muted)}
-.prog-text{font-size:var(--f-sm);color:var(--muted);margin-top:8px;font-weight:600}
+.prog-text{font-size:var(--f-sm);color:var(--muted);margin-top:8px;font-weight:500}
 
-/* ── RANK BOX ──────────────────────────────────────────────── */
+/* RANK BOX */
 .rank-box{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
-.rank-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px}
+.rank-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
 .rank-row{display:flex;gap:12px}
 .rank-item{flex:1;text-align:center}
-.rank-num{font-family:'Cinzel',serif;font-size:28px;color:var(--c3)}
-.rank-lbl{font-size:var(--f-sm);color:var(--muted);font-weight:600}
+.rank-num{font-size:26px;font-weight:700;color:var(--c3)}
+.rank-lbl{font-size:var(--f-sm);color:var(--muted);font-weight:500}
 
-/* ── FIQ HISTORY ───────────────────────────────────────────── */
+/* FIQ HISTORY */
 .fiq-hist{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
-.fiq-hist-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px}
+.fiq-hist-title{font-size:var(--f-md);color:var(--c2);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
 .fiq-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)}
 .fiq-row:last-child{border:none}
 
-/* ── FIQ CARD ──────────────────────────────────────────────── */
+/* FIQ CARD */
 .fiq-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;animation:slideIn .3s ease both}
 .fiq-bar-bg{background:var(--s2);border-radius:4px;height:5px;margin-top:5px;overflow:hidden}
 .fiq-bar{height:100%;border-radius:4px;transition:width .8s ease}
 
-/* ── NF / LOADER ───────────────────────────────────────────── */
-.nf{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:28px;text-align:center;color:var(--muted)}
+/* NF / LOADER */
+.nf{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:24px;text-align:center;color:var(--muted)}
 .nf-icon{font-size:36px;margin-bottom:10px}
 .nf-hint{font-size:var(--f-md);line-height:1.7;color:var(--c5);background:rgba(17,100,102,.1);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:10px;text-align:left}
 .nf-hint a{color:var(--c3);font-weight:700}
 .loader{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:10px}
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--c2);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ltext{font-size:var(--f-md);color:var(--muted);font-weight:600}
+.ltext{font-size:var(--f-md);color:var(--muted);font-weight:500}
 
-/* ── ADMIN ─────────────────────────────────────────────────── */
+/* ADMIN SECTIONS - DROPDOWN */
 .asec{background:var(--s1);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
-.asec-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;cursor:pointer;user-select:none}
-.asec-title{font-size:var(--f-md);color:var(--c3);font-weight:700;text-transform:uppercase;letter-spacing:.7px}
-.asec-arrow{color:var(--muted);font-size:var(--f-lg);transition:transform .25s;flex-shrink:0}
-.asec-arrow.open{transform:rotate(180deg)}
+.asec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;user-select:none;min-height:52px}
+.asec-title{font-size:var(--f-md);color:var(--c3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex:1}
+.asec-arrow{color:var(--muted);font-size:18px;transition:transform .25s;flex-shrink:0;margin-left:8px}
 .asec-body{display:none;padding:0 14px 14px;border-top:1px solid var(--border)}
 .asec-body.open{display:block}
+.asec-arrow.open{transform:rotate(180deg)}
 
-.flabel{font-size:var(--f-sm);color:var(--muted);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-.finput,.fselect{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--c5);font-family:'Montserrat',sans-serif;font-size:var(--f-lg);outline:none;transition:border-color .2s;margin-bottom:8px;appearance:none}
+/* FORMS */
+.flabel{font-size:var(--f-sm);color:var(--muted);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.3px;font-weight:700;margin-top:10px}
+.flabel:first-child{margin-top:4px}
+.finput,.fselect{width:100%;background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:11px 13px;color:var(--c5);font-size:var(--f-lg);font-weight:400;outline:none;transition:border-color .2s;margin-bottom:0;appearance:none}
 .finput:focus,.fselect:focus{border-color:var(--c2)}
 .frow2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-/* ── BUTTONS ───────────────────────────────────────────────── */
-.btn{width:100%;border:none;border-radius:9px;padding:11px;font-family:'Montserrat',sans-serif;font-size:var(--f-md);font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+/* BUTTONS */
+.btn{width:100%;border:none;border-radius:10px;padding:13px 16px;font-size:var(--f-md);font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px;text-transform:uppercase;display:block;margin-top:8px}
 .btn:active{opacity:.75;transform:scale(.99)}
 .btn-teal{background:linear-gradient(135deg,#116466,#0e4d50);color:var(--c5)}
 .btn-peach{background:linear-gradient(135deg,#D9B08C,#c49872);color:var(--c1)}
 .btn-red{background:rgba(180,60,60,.15);color:#e07070;border:1px solid rgba(180,60,60,.3)}
-.btn-sm{padding:7px 12px;font-size:var(--f-sm);width:auto;margin-bottom:0}
+.btn-sm{padding:10px 16px;font-size:var(--f-sm);width:auto;margin-top:0;display:inline-block}
 
-/* ── RESULTS BUILDER ───────────────────────────────────────── */
-.res-row{background:var(--s2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:6px}
-.res-player-info{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.res-tgid{font-size:var(--f-sm);color:var(--muted);font-weight:600}
-.res-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.res-inputs .finput,.res-inputs .fselect{margin-bottom:0}
+/* GAME ROWS BUILDER */
+.res-row{background:var(--s2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px}
+.res-top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.res-tgid{font-size:var(--f-sm);color:var(--muted);font-weight:500;margin-bottom:6px}
+.res-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-/* ── GAMES TABLE ───────────────────────────────────────────── */
-.games-table{width:100%;border-collapse:collapse}
-.games-table th{background:var(--s2);color:var(--c3);font-size:var(--f-sm);font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);position:sticky;top:0}
-.games-table td{padding:8px 10px;font-size:var(--f-md);color:var(--c5);border-bottom:1px solid rgba(17,100,102,.1);vertical-align:middle}
-.games-table tr:last-child td{border:none}
-.games-group-header{background:rgba(17,100,102,.15);font-size:var(--f-md);font-weight:700;color:var(--c2);padding:8px 10px;letter-spacing:.5px;display:flex;align-items:center;justify-content:space-between}
-.edit-inp{background:var(--s2);border:1px solid var(--c2);border-radius:6px;padding:4px 7px;color:var(--c5);font-family:'Montserrat',sans-serif;font-size:var(--f-sm);outline:none;width:100%}
-.edit-btn{background:none;border:none;cursor:pointer;color:var(--c2);font-size:var(--f-md);padding:2px 5px}
-.save-btn{background:var(--c2);border:none;border-radius:5px;color:var(--c1);font-size:var(--f-sm);font-weight:700;padding:4px 8px;cursor:pointer;display:none}
-.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:10px;background:var(--s1)}
+/* GAMES TABLE */
+.game-group{margin-bottom:12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.game-group-head{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;background:var(--s2);cursor:pointer;min-height:50px}
+.game-group-date{font-size:var(--f-md);font-weight:700;color:var(--c4)}
+.game-group-arrow{font-size:18px;color:var(--muted);transition:transform .25s}
+.game-group-arrow.open{transform:rotate(180deg)}
+.game-group-body{display:none;background:var(--s1)}
+.game-group-body.open{display:block}
+.table-wrap{overflow-x:auto}
+.gtable{width:100%;border-collapse:collapse;min-width:360px}
+.gtable th{background:var(--s2);color:var(--c3);font-size:var(--f-sm);font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.gtable td{padding:10px 12px;font-size:var(--f-md);color:var(--c5);border-bottom:1px solid rgba(17,100,102,.1);vertical-align:middle}
+.gtable tr:last-child td{border-bottom:none}
+.place-badge{display:inline-block;font-size:var(--f-md);font-weight:700;min-width:28px;text-align:center}
+.edit-cell-inp{background:var(--s2);border:1px solid var(--c2);border-radius:6px;padding:6px 8px;color:var(--c5);font-size:var(--f-md);outline:none;width:100%;font-weight:400}
+.game-actions{display:flex;gap:8px;padding:10px 14px;border-top:1px solid var(--border);background:var(--s2)}
+.add-row-area{padding:10px 14px;border-top:1px solid var(--border)}
+.add-row-form{background:var(--s2);border-radius:9px;padding:12px;display:none}
+.add-row-form.open{display:block}
 
-/* ── TOOLTIP ───────────────────────────────────────────────── */
-.tip-wrap{position:relative;display:inline-block}
-.tip-btn{background:none;border:1px solid var(--border);border-radius:50%;width:18px;height:18px;cursor:pointer;color:var(--muted);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:4px;flex-shrink:0}
-.tip-popup{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--c1);border:1px solid var(--c2);border-radius:8px;padding:8px 10px;font-size:var(--f-sm);color:var(--c5);white-space:normal;width:200px;z-index:300;box-shadow:0 4px 16px rgba(0,0,0,.5);line-height:1.5;font-weight:400}
+/* TOOLTIP */
+.tip-wrap{position:relative;display:inline-flex;align-items:center;vertical-align:middle}
+.tip-btn{background:none;border:1px solid var(--border);border-radius:50%;width:22px;height:22px;cursor:pointer;color:var(--muted);font-size:var(--f-sm);font-weight:700;display:inline-flex;align-items:center;justify-content:center;margin-left:5px;flex-shrink:0;padding:0}
+.tip-popup{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--c1);border:1px solid var(--c2);border-radius:10px;padding:10px 12px;font-size:var(--f-sm);color:var(--c5);width:220px;z-index:300;box-shadow:0 4px 16px rgba(0,0,0,.6);line-height:1.6;font-weight:400;white-space:normal}
 .tip-popup.show{display:block}
 
-/* ── TOAST ─────────────────────────────────────────────────── */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 16px;border-radius:20px;font-size:var(--f-md);font-weight:700;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;max-width:90vw;box-shadow:0 4px 20px rgba(0,0,0,.6)}
+/* INSTRUCTION */
+.inst-section{background:var(--s1);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.inst-head{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;min-height:52px}
+.inst-title{font-size:var(--f-md);font-weight:700;color:var(--c3);flex:1;text-transform:uppercase;letter-spacing:.3px}
+.inst-arrow{font-size:18px;color:var(--muted);transition:transform .25s}
+.inst-arrow.open{transform:rotate(180deg)}
+.inst-body{display:none;padding:4px 16px 16px;border-top:1px solid var(--border)}
+.inst-body.open{display:block}
+.inst-step{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.inst-num{width:26px;height:26px;border-radius:50%;background:var(--c2);color:var(--c1);font-size:var(--f-sm);font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.inst-text{font-size:var(--f-md);line-height:1.6;color:var(--c5)}
+.inst-warn{background:rgba(217,176,140,.1);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;margin:8px 0;font-size:var(--f-md);color:var(--c4);line-height:1.6}
+.inst-link{color:var(--c3);font-weight:700;text-decoration:none;word-break:break-all}
+.inst-divider{height:1px;background:var(--border);margin:10px 0}
+.inst-note{font-size:var(--f-sm);color:var(--muted);line-height:1.6;margin-top:6px}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(14px);background:var(--s1);border:1px solid var(--border);color:var(--text);padding:9px 18px;border-radius:20px;font-size:var(--f-md);font-weight:700;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;max-width:90vw;box-shadow:0 4px 20px rgba(0,0,0,.6)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast.ok{border-color:var(--c2);color:var(--c2)}
 .toast.err{border-color:#e07070;color:#e07070}
@@ -212,6 +220,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
   <button class="tab" onclick="switchTab('stats',this)">Статистика</button>
   <button class="tab tab-admin" id="admin-tab" onclick="switchTab('admin',this)">Управление</button>
   <button class="tab tab-admin" id="games-tab" onclick="switchTab('games',this)">История игр</button>
+  <button class="tab tab-admin" id="inst-tab" onclick="switchTab('inst',this)">Инструкция</button>
 </div>
 
 <!-- МОИ ИГРЫ -->
@@ -223,7 +232,7 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
 <!-- РЕЙТИНГ FIQ -->
 <div id="tab-fiq" class="view">
   <div class="stitle">Рейтинг FIQ</div>
-  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Средний Financial IQ за все игры</div>
+  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:12px;font-weight:500;text-transform:uppercase;letter-spacing:.3px">Средний Financial IQ за все игры</div>
   <div id="fiq-list"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
 </div>
 
@@ -235,11 +244,11 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
     <div class="scard"><div class="sval" id="s-leader">—</div><div class="slbl">Лидер</div></div>
   </div>
   <div class="stitle">Таблица лидеров</div>
-  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:10px;font-weight:600">🔖 = накопленные печати &nbsp;&nbsp; 🎫 = бесплатный билет</div>
+  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:10px;font-weight:500">🔖 = накопленные печати &nbsp; 🎫 = бесплатный билет</div>
   <div id="top-list"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
 </div>
 
-<!-- УПРАВЛЕНИЕ (ADMIN) -->
+<!-- УПРАВЛЕНИЕ -->
 <div id="tab-admin" class="view">
   <div class="stitle">Управление</div>
 
@@ -247,46 +256,40 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
   <div class="asec">
     <div class="asec-head" onclick="toggleSec(this)">
       <span class="asec-title">➕ Добавить участника</span>
-      <span class="tip-wrap">
-        <button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button>
-        <div class="tip-popup">Введите имя нового участника. Система проверит, нет ли уже такого игрока в базе.</div>
-      </span>
+      <span class="tip-wrap"><button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button><div class="tip-popup">Введите имя участника и его Telegram ID. Система не даст добавить дубликат с тем же именем и ID.</div></span>
       <span class="asec-arrow">▾</span>
     </div>
     <div class="asec-body">
-      <div class="flabel" style="margin-top:4px">Имя участника</div>
+      <label class="flabel">Имя участника</label>
       <input class="finput" id="inp-name" placeholder="Иванов Иван">
-      <div class="flabel">Telegram ID <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Telegram ID — число. Участник может узнать его написав боту @userinfobot</div></span></div>
-      <input class="finput" id="inp-tgid" placeholder="123456789" type="number">
+      <label class="flabel">Telegram ID <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Участник узнаёт свой ID написав боту @userinfobot в Telegram. Это числовое значение.</div></span></label>
+      <input class="finput" id="inp-tgid" placeholder="123456789" type="number" style="margin-top:6px">
       <button class="btn btn-peach" onclick="adminAddPlayer()">+ ДОБАВИТЬ УЧАСТНИКА</button>
     </div>
   </div>
 
-  <!-- Управление игроком -->
+  <!-- Управление участником -->
   <div class="asec">
     <div class="asec-head" onclick="toggleSec(this)">
       <span class="asec-title">✏️ Управление участником</span>
-      <span class="tip-wrap">
-        <button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button>
-        <div class="tip-popup">Выберите участника для редактирования данных или использования билета.</div>
-      </span>
+      <span class="tip-wrap"><button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button><div class="tip-popup">Выберите участника чтобы изменить имя, Telegram ID или вручную скорректировать билеты.</div></span>
       <span class="asec-arrow">▾</span>
     </div>
     <div class="asec-body">
-      <div class="flabel" style="margin-top:4px">Выберите участника</div>
-      <select class="fselect" id="sel-manage" onchange="onSelectPlayer()">
+      <label class="flabel">Выберите участника</label>
+      <select class="fselect" id="sel-manage" onchange="onSelectPlayer()" style="margin-top:6px">
         <option value="">— выберите —</option>
       </select>
       <div id="manage-detail" style="display:none">
-        <div style="height:1px;background:var(--border);margin:8px 0"></div>
-        <div class="flabel">Имя</div>
-        <input class="finput" id="edit-name" placeholder="Новое имя">
-        <div class="flabel">Telegram ID</div>
-        <input class="finput" id="edit-tgid" placeholder="123456789" type="number">
-        <div class="flabel">Билеты (ручная корректировка) <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Билеты начисляются автоматически (9 печатей = 1 билет). Это поле для ручной корректировки.</div></span></div>
-        <input class="finput" id="edit-tickets" type="number" min="0">
-        <button class="btn btn-teal" onclick="adminEditPlayer()">✅ СОХРАНИТЬ</button>
-        <button class="btn btn-red" onclick="adminUseTicket()">🎫 ИСПОЛЬЗОВАТЬ БИЛЕТ <span class="tip-wrap"><button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button><div class="tip-popup">Аннулирует 1 бесплатный билет у выбранного участника.</div></span></button>
+        <div style="height:1px;background:var(--border);margin:12px 0"></div>
+        <label class="flabel">Имя</label>
+        <input class="finput" id="edit-name" style="margin-top:6px">
+        <label class="flabel">Telegram ID</label>
+        <input class="finput" id="edit-tgid" type="number" style="margin-top:6px">
+        <label class="flabel">Билеты <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Билеты начисляются автоматически: 9 печатей = 1 билет. Это поле только для ручной корректировки.</div></span></label>
+        <input class="finput" id="edit-tickets" type="number" min="0" style="margin-top:6px">
+        <button class="btn btn-teal" onclick="adminEditPlayer()">✅ СОХРАНИТЬ ИЗМЕНЕНИЯ</button>
+        <button class="btn btn-red" onclick="adminUseTicket()">🎫 ИСПОЛЬЗОВАТЬ БИЛЕТ <span class="tip-wrap"><button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button><div class="tip-popup">Списывает 1 бесплатный билет. Действие нельзя отменить через приложение — только через Google Sheets.</div></span></button>
       </div>
     </div>
   </div>
@@ -295,131 +298,239 @@ body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);
   <div class="asec">
     <div class="asec-head" onclick="toggleSec(this)">
       <span class="asec-title">🎮 Записать игру</span>
-      <span class="tip-wrap">
-        <button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button>
-        <div class="tip-popup">Выберите участников из списка, укажите место и FIQ каждого. Один день = одна игра.</div>
-      </span>
+      <span class="tip-wrap"><button class="tip-btn" onclick="event.stopPropagation();toggleTip(this)">?</button><div class="tip-popup">Выберите дату, добавьте участников из списка. Укажите место и FIQ каждого. Одна дата = одна игра.</div></span>
       <span class="asec-arrow">▾</span>
     </div>
     <div class="asec-body">
-      <div class="flabel" style="margin-top:4px">Дата игры <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Важно: одна дата = одна игра. Нельзя записать две игры на одну дату.</div></span></div>
-      <input class="finput" id="game-date" type="date" style="width:100%">
-      <div class="flabel">Заметка (необязательно)</div>
-      <input class="finput" id="game-notes" placeholder="Например: Офис, 6 участников">
-      <div class="flabel">Участники игры</div>
-      <div id="game-rows"></div>
-      <button class="btn btn-teal" onclick="addGameRow()" style="margin-bottom:8px">+ Добавить участника</button>
+      <label class="flabel">Дата игры <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Важно: одна дата = одна игра. Две записи на одну дату недопустимы.</div></span></label>
+      <input class="finput" id="game-date" type="date" style="margin-top:6px;width:100%">
+      <label class="flabel">Заметка (необязательно)</label>
+      <input class="finput" id="game-notes" placeholder="Например: Офис Ташкент" style="margin-top:6px">
+      <label class="flabel">Участники</label>
+      <div id="game-rows" style="margin-top:6px"></div>
+      <button class="btn btn-teal" onclick="addGameRow()" style="margin-top:6px">+ Добавить участника</button>
       <button class="btn btn-peach" onclick="adminRecordGame()">💾 СОХРАНИТЬ ИГРУ</button>
     </div>
   </div>
 </div>
 
-<!-- ИСТОРИЯ ИГР (ADMIN) -->
+<!-- ИСТОРИЯ ИГР -->
 <div id="tab-games" class="view">
   <div class="stitle">История игр</div>
+  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:12px;font-weight:500">Нажмите на дату чтобы раскрыть. Игры отсортированы от новых к старым.</div>
   <div id="games-content"><div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div></div>
+</div>
+
+<!-- ИНСТРУКЦИЯ -->
+<div id="tab-inst" class="view">
+  <div class="stitle">Инструкция</div>
+  <div style="font-size:var(--f-sm);color:var(--muted);margin-bottom:14px;font-weight:500">Руководство для администратора</div>
+
+  <!-- Быстрый старт -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">🚀 Быстрый старт</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Перейдите на вкладку <strong style="color:var(--c4)">Управление</strong> — она видна только администратору.</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Сначала добавьте всех участников через блок <strong style="color:var(--c4)">Добавить участника</strong>. Укажите имя и попросите каждого написать боту <a href="https://t.me/userinfobot" class="inst-link">@userinfobot</a> чтобы узнать свой Telegram ID.</div></div>
+      <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">После каждой игры открывайте <strong style="color:var(--c4)">Записать игру</strong>, выбирайте дату, добавляйте участников и вводите их место и FIQ.</div></div>
+      <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Нажмите <strong style="color:var(--c4)">💾 Сохранить игру</strong>. Печати начислятся автоматически: 1 место = 3 🔖, 2 место = 2 🔖, 3 место = 1 🔖.</div></div>
+      <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">При накоплении 9 печатей игрок автоматически получает 🎫 бесплатный билет на игру.</div></div>
+    </div>
+  </div>
+
+  <!-- Вкладки -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">📱 Что делает каждая вкладка</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-step"><div class="inst-num" style="background:var(--c3)">1</div><div class="inst-text"><strong style="color:var(--c4)">Мои игры</strong> — каждый участник видит свою статистику: печати, билеты, средний и максимальный FIQ, прогресс к следующему билету. Отображается только при открытии через Telegram.</div></div>
+      <div class="inst-divider"></div>
+      <div class="inst-step"><div class="inst-num" style="background:var(--c3)">2</div><div class="inst-text"><strong style="color:var(--c4)">Рейтинг FIQ</strong> — рейтинг всех участников по среднему FIQ. Чем выше среднее значение Financial IQ — тем выше место.</div></div>
+      <div class="inst-divider"></div>
+      <div class="inst-step"><div class="inst-num" style="background:var(--c3)">3</div><div class="inst-text"><strong style="color:var(--c4)">Статистика</strong> — общий рейтинг по накопленным печатям. Здесь видно кто лидирует по количеству побед.</div></div>
+      <div class="inst-divider"></div>
+      <div class="inst-step"><div class="inst-num" style="background:var(--c2)">4</div><div class="inst-text"><strong style="color:var(--c4)">Управление</strong> (только для администратора) — добавление участников, редактирование данных, запись новых игр, использование билетов.</div></div>
+      <div class="inst-divider"></div>
+      <div class="inst-step"><div class="inst-num" style="background:var(--c2)">5</div><div class="inst-text"><strong style="color:var(--c4)">История игр</strong> (только для администратора) — все записанные игры сгруппированы по датам. Можно просматривать, а при необходимости серьёзные исправления делать через Google Sheets.</div></div>
+    </div>
+  </div>
+
+  <!-- Добавление игроков -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">👤 Как добавить участника</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Откройте <strong style="color:var(--c4)">Управление → Добавить участника</strong>.</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Введите полное имя участника так, как оно будет отображаться в рейтинге.</div></div>
+      <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Попросите участника написать в Telegram боту <a href="https://t.me/userinfobot" class="inst-link">@userinfobot</a> — он пришлёт числовой Telegram ID. Вставьте это число в поле Telegram ID.</div></div>
+      <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Нажмите <strong style="color:var(--c4)">+ Добавить участника</strong>. Система проверит дубликаты автоматически.</div></div>
+      <div class="inst-warn">⚠️ Если вы неправильно добавили участника, исправить имя можно через блок <strong>Управление участником</strong>. Удалить участника можно только через Google Sheets.</div>
+    </div>
+  </div>
+
+  <!-- Запись игры -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">🎮 Как записать игру</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-step"><div class="inst-num">1</div><div class="inst-text">Откройте <strong style="color:var(--c4)">Управление → Записать игру</strong>.</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Выберите дату игры. Помните: одна дата = одна игра. Нельзя записать две игры на один день.</div></div>
+      <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Нажмите <strong style="color:var(--c4)">+ Добавить участника</strong> для каждого игрока. Выберите имя из выпадающего списка.</div></div>
+      <div class="inst-step"><div class="inst-num">4</div><div class="inst-text">Для каждого участника укажите <strong style="color:var(--c4)">место</strong> (1, 2, 3 или 4+) и значение <strong style="color:var(--c4)">FIQ</strong> из карточки игры.</div></div>
+      <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">Нажмите <strong style="color:var(--c4)">💾 Сохранить игру</strong>.</div></div>
+      <div class="inst-warn">⚠️ Если вы случайно ввели неверные данные, исправить их можно только в Google Sheets — см. раздел «Исправление ошибок» ниже.</div>
+      <div class="inst-note">FIQ — это числовое значение Financial IQ из карточки участника после завершения игры Cashflow. Может быть целым (1800) или дробным (2100.56).</div>
+    </div>
+  </div>
+
+  <!-- Печати и билеты -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">🔖 Как работают печати и билеты</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-step"><div class="inst-num">1</div><div class="inst-text"><strong style="color:var(--c4)">Печати</strong> начисляются автоматически после каждой игры:<br>🥇 1 место = 3 печати<br>🥈 2 место = 2 печати<br>🥉 3 место = 1 печать<br>4+ место = 0 печатей</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div class="inst-text">Когда у участника накапливается <strong style="color:var(--c4)">9 печатей</strong> — система автоматически выдаёт ему <strong style="color:var(--c4)">🎫 1 бесплатный билет</strong> на следующую игру.</div></div>
+      <div class="inst-step"><div class="inst-num">3</div><div class="inst-text">Чтобы использовать билет, откройте <strong style="color:var(--c4)">Управление → Управление участником</strong>, выберите игрока и нажмите <strong style="color:var(--c4)">🎫 Использовать билет</strong>.</div></div>
+      <div class="inst-warn">⚠️ Использование билета нельзя отменить через приложение. Если нажали по ошибке — обратитесь к Google Sheets и вручную увеличьте число в столбце «tickets».</div>
+    </div>
+  </div>
+
+  <!-- Исправление ошибок -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">🛠️ Исправление ошибок через Google Sheets</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div class="inst-warn">⚠️ Если данные внесены неверно (неправильный FIQ, место, имя), исправить их можно только напрямую в Google Sheets. Приложение считывает данные из таблицы в реальном времени.</div>
+      <div style="margin-bottom:10px;margin-top:10px">
+        <a href="https://docs.google.com/spreadsheets/d/1jf0T7WPMgKmtOANsPFE3mXLFfWFVROWbJLF2XrcgFE8/edit?gid=1788652422#gid=1788652422" class="inst-link" target="_blank">📊 Открыть Google Sheets →</a>
+      </div>
+      <div class="inst-divider"></div>
+      <div class="inst-step"><div class="inst-num">1</div><div class="inst-text"><strong style="color:var(--c4)">Лист Players</strong> — данные всех участников. Столбцы: id, full_name, telegram_id, total_stamps, used_stamps, games_played, tickets, created_at. Можно менять имя и telegram_id вручную.</div></div>
+      <div class="inst-step"><div class="inst-num">2</div><div class="inst-text"><strong style="color:var(--c4)">Лист FIQ_History</strong> — история всех результатов. Найдите нужную строку по game_id и player_id, исправьте значения place и fiq. <strong style="color:#e07070">Не удаляйте строки без необходимости</strong> — это повлияет на статистику.</div></div>
+      <div class="inst-step"><div class="inst-num">3</div><div class="inst-text"><strong style="color:var(--c4)">Лист Games</strong> — список игр. Каждая строка = одна игра с уникальным game_id.</div></div>
+      <div class="inst-step"><div class="inst-num">4</div><div class="inst-text"><strong style="color:var(--c4)">Как найти нужную строку:</strong> используйте Ctrl+F (или ⌘+F на Mac) для поиска по тексту в таблице. Введите имя участника или дату.</div></div>
+      <div class="inst-step"><div class="inst-num">5</div><div class="inst-text">После исправления данных в Google Sheets <strong style="color:var(--c4)">обновите приложение</strong> — данные подтянутся автоматически при следующем открытии вкладки.</div></div>
+      <div class="inst-warn">⚠️ <strong>Удаление данных:</strong> удалять строки из Players или FIQ_History нужно осторожно. Если удалить игрока из Players — его история в FIQ_History останется, но не будет привязана к профилю. Рекомендуем не удалять, а очищать поля telegram_id если участник больше не играет.</div>
+    </div>
+  </div>
+
+  <!-- Частые вопросы -->
+  <div class="inst-section">
+    <div class="inst-head" onclick="toggleInst(this)">
+      <span class="inst-title">❓ Частые вопросы</span>
+      <span class="inst-arrow">▾</span>
+    </div>
+    <div class="inst-body">
+      <div style="margin-bottom:10px">
+        <div style="font-size:var(--f-md);font-weight:700;color:var(--c4);margin-bottom:4px">Участник не видит свою статистику в «Мои игры»?</div>
+        <div class="inst-text">Значит его Telegram ID не добавлен или добавлен неверно. Попросите написать <a href="https://t.me/userinfobot" class="inst-link">@userinfobot</a> и передать вам ID. Добавьте через <strong>Управление → Управление участником</strong>.</div>
+      </div>
+      <div class="inst-divider"></div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:var(--f-md);font-weight:700;color:var(--c4);margin-bottom:4px">Бот не отвечает?</div>
+        <div class="inst-text">Telegram-бот иногда работает с задержкой до 10 секунд. Если бот не отвечает более 30 секунд — проверьте Mini App: откройте его напрямую через кнопку в боте. Данные в Mini App загружаются независимо от бота.</div>
+      </div>
+      <div class="inst-divider"></div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:var(--f-md);font-weight:700;color:var(--c4);margin-bottom:4px">Приложение показывает «Ошибка загрузки»?</div>
+        <div class="inst-text">Закройте и откройте заново. Если ошибка повторяется — проверьте Google Sheets что данные на месте. Обратитесь к <a href="https://docs.google.com/spreadsheets/d/1jf0T7WPMgKmtOANsPFE3mXLFfWFVROWbJLF2XrcgFE8/edit?gid=1788652422#gid=1788652422" class="inst-link" target="_blank">таблице</a>.</div>
+      </div>
+      <div class="inst-divider"></div>
+      <div>
+        <div style="font-size:var(--f-md);font-weight:700;color:var(--c4);margin-bottom:4px">Как добавить исторические данные за прошлые игры?</div>
+        <div class="inst-text">Используйте блок <strong>Записать игру</strong> и выберите прошедшую дату. Либо добавьте строки напрямую в лист FIQ_History в Google Sheets. Формат: game_id, date, player_id, player_name, place, fiq, stamps.</div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ═══════════════════════════════════════════
 const API_URL = 'https://script.google.com/macros/s/AKfycbzLOpP1caEB5GDz2VHvjTUh3vV2DSbSJN13rWpSz8kxqSpQD3SLlsw95RKLu-fxw7Ld/exec';
-// ═══════════════════════════════════════════
 
-const COLORS = ['#2E7D8A','#D9B08C','#116466','#5D4037','#37474F','#6A1B9A','#558B2F','#AD1457','#00695C','#1565C0','#827717','#4E342E'];
-const tg = window.Telegram?.WebApp;
-let tgUser = null, allPlayers = [], isAdminUser = false, _jc = 0;
+const COLORS=['#2E7D8A','#D9B08C','#116466','#5D4037','#37474F','#6A1B9A','#558B2F','#AD1457','#00695C','#1565C0','#827717','#4E342E'];
+const tg=window.Telegram?.WebApp;
+let tgUser=null, allPlayers=[], _jc=0;
 
-if (tg) {
-  tg.ready(); tg.expand();
-  tg.setHeaderColor?.('#1a211e');
-  tg.setBackgroundColor?.('#1a211e');
-  tgUser = tg.initDataUnsafe?.user;
-}
+if(tg){tg.ready();tg.expand();tg.setHeaderColor?.('#1a211e');tg.setBackgroundColor?.('#1a211e');tgUser=tg.initDataUnsafe?.user;}
 
-// ── JSONP ──────────────────────────────────
-function apiGet(action, params={}) {
-  return new Promise(resolve => {
-    const cb = 'jcb'+(++_jc), sid = 'js'+_jc;
-    const url = new URL(API_URL);
-    url.searchParams.set('action', action);
-    url.searchParams.set('callback', cb);
+// JSONP
+function apiGet(action,params={}){
+  return new Promise(resolve=>{
+    const cb='jcb'+(++_jc),sid='js'+_jc;
+    const url=new URL(API_URL);
+    url.searchParams.set('action',action);url.searchParams.set('callback',cb);
     Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));
-    const t = setTimeout(()=>{ resolve({ok:false,error:'timeout'}); delete window[cb]; document.getElementById(sid)?.remove(); },15000);
-    window[cb] = data=>{ clearTimeout(t); resolve(data); delete window[cb]; document.getElementById(sid)?.remove(); };
-    const s = document.createElement('script');
-    s.id=sid; s.src=url.toString();
-    s.onerror=()=>{ clearTimeout(t); resolve({ok:false,error:'network'}); delete window[cb]; };
+    const t=setTimeout(()=>{resolve({ok:false,error:'timeout'});delete window[cb];document.getElementById(sid)?.remove();},15000);
+    window[cb]=data=>{clearTimeout(t);resolve(data);delete window[cb];document.getElementById(sid)?.remove();};
+    const s=document.createElement('script');s.id=sid;s.src=url.toString();
+    s.onerror=()=>{clearTimeout(t);resolve({ok:false,error:'network'});delete window[cb];};
     document.head.appendChild(s);
   });
 }
-async function apiPost(body) {
-  try {
-    const r = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...body,telegram_id:tgUser?.id})});
+async function apiPost(body){
+  try{
+    const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...body,telegram_id:tgUser?.id})});
     return JSON.parse(await r.text());
-  } catch(e){ return {ok:false,error:e.toString()}; }
+  }catch(e){return{ok:false,error:e.toString()};}
 }
 
-// ── TABS ───────────────────────────────────
-function switchTab(tab, btn) {
+// TABS
+function switchTab(tab,btn){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   btn.classList.add('active');
-  if (tab==='my')     loadMy();
-  if (tab==='fiq')    loadFiq();
-  if (tab==='stats')  loadStats();
-  if (tab==='admin')  loadAdmin();
-  if (tab==='games')  loadGames();
+  if(tab==='my')    loadMy();
+  if(tab==='fiq')   loadFiq();
+  if(tab==='stats') loadStats();
+  if(tab==='admin') loadAdmin();
+  if(tab==='games') loadGames();
 }
 
-// ── МОИ ИГРЫ ──────────────────────────────
-async function loadMy() {
-  const el = document.getElementById('my-content');
-  if (!tgUser) {
-    el.innerHTML = `<div class="nf">
-      <div class="nf-icon">🔍</div>
-      <div>Откройте через Telegram для просмотра вашей статистики</div>
-      <div class="nf-hint">📱 Чтобы администратор добавил вас в таблицу:<br>1. Напишите боту <a href="https://t.me/userinfobot">@userinfobot</a><br>2. Скопируйте ваш Telegram ID (число)<br>3. Передайте ID администратору канала</div>
-    </div>`; return;
+// МОИ ИГРЫ
+async function loadMy(){
+  const el=document.getElementById('my-content');
+  if(!tgUser){
+    el.innerHTML=`<div class="nf"><div class="nf-icon">🔍</div><div>Откройте через Telegram для просмотра статистики</div><div class="nf-hint">📱 Как добавиться:<br>1. Напишите боту <a href="https://t.me/userinfobot">@userinfobot</a><br>2. Скопируйте ваш Telegram ID<br>3. Передайте его администратору канала</div></div>`;return;
   }
-  el.innerHTML = loader();
-  try {
-    const res = await apiGet('getMyData',{telegram_id:tgUser.id});
-    if (!res.ok) {
-      el.innerHTML = `<div class="nf">
-        <div class="nf-icon">🤷</div>
-        <div>Вас нет в базе участников</div>
-        <div class="nf-hint">📱 Как добавиться:<br>1. Напишите боту <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a><br>2. Скопируйте ваш Telegram ID<br>3. Передайте ID администратору канала</div>
-      </div>`; return;
+  el.innerHTML=loader();
+  try{
+    const res=await apiGet('getMyData',{telegram_id:tgUser.id});
+    if(!res.ok){
+      el.innerHTML=`<div class="nf"><div class="nf-icon">🤷</div><div>Вас нет в базе участников</div><div class="nf-hint">📱 Чтобы добавиться:<br>1. Напишите боту <a href="https://t.me/userinfobot">@userinfobot</a><br>2. Скопируйте ваш Telegram ID<br>3. Передайте его администратору канала</div></div>`;return;
     }
-    const p = res.data;
-    const color = COLORS[(parseInt(p.id)-1+COLORS.length)%COLORS.length];
-    const ini = p.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-    const free = p.free_stamps||0;
-    const inCycle = free%9;
-
-    // Прогресс-кружки
-    const dots = Array.from({length:9},(_,i)=>
-      `<div class="prog-dot ${i<inCycle?'on':'off'}">${i<inCycle?'🔖':''}</div>`).join('');
-
-    // История FIQ
-    let histHtml = '';
-    if (p.fiq_history?.length) {
-      histHtml = `<div class="fiq-hist">
-        <div class="fiq-hist-title">Последние игры</div>
-        ${p.fiq_history.map(h=>`
-          <div class="fiq-row">
-            <span style="color:var(--muted);font-size:var(--f-sm);font-weight:600">${fmtDate(h.date)}</span>
-            <span style="font-size:var(--f-md)">${placeIcon(h.place)} ${h.place} место</span>
-            <span style="color:var(--c2);font-weight:700;font-size:var(--f-md)">${h.fiq} FIQ</span>
-            <span style="color:var(--c3);font-size:var(--f-md)">${h.stamps}🔖</span>
-          </div>`).join('')}
-      </div>`;
+    const p=res.data;
+    const color=COLORS[(parseInt(p.id)-1+COLORS.length)%COLORS.length];
+    const ini=p.full_name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+    const free=p.free_stamps||0,inCycle=free%9;
+    const dots=Array.from({length:9},(_,i)=>`<div class="prog-dot ${i<inCycle?'on':'off'}">${i<inCycle?'🔖':''}</div>`).join('');
+    let histHtml='';
+    if(p.fiq_history?.length){
+      histHtml=`<div class="fiq-hist"><div class="fiq-hist-title">Последние игры</div>
+        ${p.fiq_history.map(h=>`<div class="fiq-row">
+          <span style="font-size:var(--f-sm);color:var(--muted);font-weight:500">${fmtDate(h.date)}</span>
+          <span style="font-size:var(--f-md)">${placeIcon(h.place)} ${h.place} место</span>
+          <span style="color:var(--c2);font-weight:700;font-size:var(--f-md)">${h.fiq} FIQ</span>
+          <span style="color:var(--c3);font-size:var(--f-md)">${h.stamps}🔖</span>
+        </div>`).join('')}</div>`;
     }
-
-    el.innerHTML = `
+    el.innerHTML=`
       <div class="hero">
         <div class="hero-ava" style="background:${color}">${ini}</div>
         <div class="hero-name">${p.full_name}</div>
@@ -428,7 +539,7 @@ async function loadMy() {
           <div class="mstat"><div class="mval" style="color:var(--c2)">${p.tickets}</div><div class="mlbl">Билетов</div></div>
           <div class="mstat"><div class="mval" style="color:var(--c4)">${p.avg_fiq}</div><div class="mlbl">Ср. FIQ</div></div>
         </div>
-        ${p.max_fiq>0?`<div style="font-size:var(--f-sm);color:var(--muted);margin-top:8px;font-weight:600">Макс. FIQ: <span style="color:var(--c4)">${p.max_fiq}</span></div>`:''}
+        ${p.max_fiq>0?`<div style="font-size:var(--f-sm);color:var(--muted);margin-top:8px;font-weight:500">Макс. FIQ: <span style="color:var(--c4);font-weight:700">${p.max_fiq}</span></div>`:''}
       </div>
       <div class="progress-box">
         <div class="prog-title">Прогресс к билету (9 🔖 = 1 🎫)</div>
@@ -440,73 +551,71 @@ async function loadMy() {
         <div class="rank-row">
           <div class="rank-item"><div class="rank-num">#${p.rank_stamps}</div><div class="rank-lbl">по печатям</div></div>
           <div class="rank-item"><div class="rank-num" style="color:var(--c2)">#${p.rank_fiq}</div><div class="rank-lbl">по FIQ</div></div>
-          <div class="rank-item"><div class="rank-num" style="color:var(--c5);font-size:22px">${p.games_played}</div><div class="rank-lbl">игр</div></div>
+          <div class="rank-item"><div class="rank-num" style="color:var(--c5);font-size:20px">${p.games_played}</div><div class="rank-lbl">игр</div></div>
         </div>
       </div>
       ${histHtml}`;
-  } catch(e){ el.innerHTML=`<div class="nf">⚠️ Ошибка загрузки</div>`; }
+  }catch(e){el.innerHTML=`<div class="nf">⚠️ Ошибка загрузки</div>`;}
 }
 
-// ── РЕЙТИНГ FIQ ───────────────────────────
-async function loadFiq() {
-  document.getElementById('fiq-list').innerHTML = loader();
-  try {
-    const res = await apiGet('getFIQ');
-    const el = document.getElementById('fiq-list');
-    if (!res.ok||!res.data?.length){ el.innerHTML=empty('🧠','Нет данных'); return; }
-    const max = res.data[0].avg_fiq||1;
-    el.innerHTML = res.data.map((p,i)=>{
+// РЕЙТИНГ FIQ
+async function loadFiq(){
+  document.getElementById('fiq-list').innerHTML=loader();
+  try{
+    const res=await apiGet('getFIQ');
+    const el=document.getElementById('fiq-list');
+    if(!res.ok||!res.data?.length){el.innerHTML=empty('🧠','Нет данных');return;}
+    const max=res.data[0].avg_fiq||1;
+    el.innerHTML=res.data.map((p,i)=>{
       const color=COLORS[(parseInt(p.id)-1+COLORS.length)%COLORS.length];
       const ini=(p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
       const pct=Math.round(p.avg_fiq/max*100);
       const ri=i===0?'🥇':i===1?'🥈':i===2?'🥉':(i+1);
       return `<div class="fiq-card" style="animation-delay:${i*0.04}s">
         <div style="display:flex;align-items:center;gap:10px">
-          <span style="font-family:'Cinzel',serif;font-weight:700;font-size:var(--f-lg);min-width:26px;color:var(--muted)">${ri}</span>
+          <span style="font-size:var(--f-lg);font-weight:700;min-width:26px;color:var(--muted)">${ri}</span>
           <div class="ava" style="background:${color};width:36px;height:36px;font-size:var(--f-sm)">${ini}</div>
           <div style="flex:1;min-width:0">
             <div class="pname">${p.full_name}</div>
             <div class="fiq-bar-bg"><div class="fiq-bar" style="width:${pct}%;background:${color}"></div></div>
           </div>
           <div style="text-align:right;flex-shrink:0">
-            <div style="font-family:'Cinzel',serif;font-size:20px;color:var(--c2)">${p.avg_fiq}</div>
-            <div style="font-size:var(--f-sm);color:var(--muted);font-weight:600">${p.games_played} игр</div>
+            <div style="font-size:20px;font-weight:700;color:var(--c2)">${p.avg_fiq}</div>
+            <div style="font-size:var(--f-sm);color:var(--muted);font-weight:500">${p.games_played} игр</div>
           </div>
         </div>
       </div>`;
     }).join('');
-  } catch(e){ document.getElementById('fiq-list').innerHTML=empty('⚠️','Ошибка'); }
+  }catch(e){document.getElementById('fiq-list').innerHTML=empty('⚠️','Ошибка');}
 }
 
-// ── СТАТИСТИКА ─────────────────────────────
-async function loadStats() {
-  document.getElementById('top-list').innerHTML = loader();
-  try {
-    const [lb, st] = await Promise.all([apiGet('getLeaderboard'),apiGet('getStats')]);
-    if (st.ok&&st.data) {
-      document.getElementById('s-players').textContent = st.data.players;
-      document.getElementById('s-games').textContent   = st.data.games;
-      document.getElementById('s-leader').textContent  = st.data.leader?.name.split(' ')[0]||'—';
+// СТАТИСТИКА
+async function loadStats(){
+  document.getElementById('top-list').innerHTML=loader();
+  try{
+    const [lb,st]=await Promise.all([apiGet('getLeaderboard'),apiGet('getStats')]);
+    if(st.ok&&st.data){
+      document.getElementById('s-players').textContent=st.data.players;
+      document.getElementById('s-games').textContent=st.data.games;
+      document.getElementById('s-leader').textContent=st.data.leader?.name.split(' ')[0]||'—';
     }
-    const el = document.getElementById('top-list');
-    if (!lb.ok||!lb.data?.length){ el.innerHTML=empty('🏆','Нет данных'); return; }
-    el.innerHTML = lb.data.map(p=>{
+    const el=document.getElementById('top-list');
+    if(!lb.ok||!lb.data?.length){el.innerHTML=empty('🏆','Нет данных');return;}
+    el.innerHTML=lb.data.map(p=>{
       const rc=p.rank<=3?'r'+p.rank:'';
       const ri=p.rank===1?'🥇':p.rank===2?'🥈':p.rank===3?'🥉':'';
       const rh=p.rank<=3?`<span class="rank">${ri}</span>`:`<span class="rank other">${p.rank}</span>`;
       const color=COLORS[(parseInt(p.id)-1+COLORS.length)%COLORS.length];
       const ini=(p.full_name||'?').split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
-      const free=p.free_stamps||0;
-      const inCyc=free%9;
+      const free=p.free_stamps||0,inCyc=free%9;
       const dots=Array.from({length:9},(_,i)=>`<div class="dot ${i<inCyc?'on':'off'}"></div>`).join('');
-      const ticketHtml=p.tickets>0?`<div class="ticket-pill">🎫 ${p.tickets}</div>`:'';
+      const tp=p.tickets>0?`<div class="ticket-pill">🎫 ${p.tickets}</div>`:'';
       return `<div class="pcard ${rc}" style="animation-delay:${Math.min(p.rank-1,9)*0.04}s">
         ${rh}
         <div class="ava" style="background:${color}">${ini}</div>
         <div class="pinfo">
           <div class="pname">${p.full_name}</div>
-          <div class="sdots">${dots}</div>
-          ${ticketHtml}
+          <div class="sdots">${dots}</div>${tp}
         </div>
         <div class="pright">
           <div class="pbig">${free}</div>
@@ -515,293 +624,283 @@ async function loadStats() {
         </div>
       </div>`;
     }).join('');
-  } catch(e){ document.getElementById('top-list').innerHTML=empty('⚠️','Ошибка'); }
+  }catch(e){document.getElementById('top-list').innerHTML=empty('⚠️','Ошибка');}
 }
 
-// ── ADMIN ──────────────────────────────────
-async function loadAdmin() {
-  const res = await apiPost({action:'getAllPlayers'});
-  if (!res.ok) { showToast('⛔ '+(res.error||'Нет прав'),'err'); return; }
-  allPlayers = res.data;
-  document.getElementById('game-date').value = new Date().toISOString().slice(0,10);
-  // Заполнить селект управления
-  document.getElementById('sel-manage').innerHTML =
+// ADMIN
+async function loadAdmin(){
+  const res=await apiPost({action:'getAllPlayers'});
+  if(!res.ok){showToast('⛔ '+(res.error||'Нет прав'),'err');return;}
+  allPlayers=res.data;
+  document.getElementById('game-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('sel-manage').innerHTML=
     '<option value="">— выберите —</option>'+
-    allPlayers.map(p=>`<option value="${p.id}">${p.full_name}${p.telegram_id?' | ID:'+p.telegram_id:''} | 🔖${p.total_stamps} | 🎫${p.tickets}</option>`).join('');
+    allPlayers.map(p=>`<option value="${p.id}">${p.full_name}${p.telegram_id?' ('+p.telegram_id+')':''}</option>`).join('');
   document.getElementById('manage-detail').style.display='none';
-  // Строки игры — по умолчанию пусто
   document.getElementById('game-rows').innerHTML='';
 }
 
-function toggleSec(head) {
-  const body = head.nextElementSibling.classList.contains('asec-body')
-    ? head.nextElementSibling
-    : head.parentElement.querySelector('.asec-body');
-  const arrow = head.querySelector('.asec-arrow');
-  // Найти правильный asec-body (следующий сиблинг после head)
-  let b = head;
-  while (b && !b.classList.contains('asec-body')) b = b.nextElementSibling;
-  if (!b) return;
-  const isOpen = b.classList.contains('open');
-  b.classList.toggle('open', !isOpen);
-  head.querySelector('.asec-arrow').classList.toggle('open', !isOpen);
+function toggleSec(head){
+  let b=head.nextElementSibling;
+  while(b&&!b.classList.contains('asec-body')) b=b.nextElementSibling;
+  if(!b) return;
+  const isOpen=b.classList.contains('open');
+  b.classList.toggle('open',!isOpen);
+  const arr=head.querySelector('.asec-arrow');
+  if(arr) arr.classList.toggle('open',!isOpen);
 }
 
-function onSelectPlayer() {
-  const id  = document.getElementById('sel-manage').value;
-  const det = document.getElementById('manage-detail');
-  if (!id) { det.style.display='none'; return; }
-  const p = allPlayers.find(x=>String(x.id)===String(id));
-  if (!p) return;
-  document.getElementById('edit-name').value    = p.full_name;
-  document.getElementById('edit-tgid').value    = p.telegram_id||'';
-  document.getElementById('edit-tickets').value = p.tickets||0;
+function onSelectPlayer(){
+  const id=document.getElementById('sel-manage').value;
+  const det=document.getElementById('manage-detail');
+  if(!id){det.style.display='none';return;}
+  const p=allPlayers.find(x=>String(x.id)===String(id));
+  if(!p) return;
+  document.getElementById('edit-name').value=p.full_name;
+  document.getElementById('edit-tgid').value=p.telegram_id||'';
+  document.getElementById('edit-tickets').value=p.tickets||0;
   det.style.display='block';
 }
 
-// Добавить строку игрока в форму записи игры
-function addGameRow() {
-  const div = document.createElement('div');
-  div.className = 'res-row';
-  div.innerHTML = `
-    <div class="res-player-info">
-      <select class="fselect" style="margin-bottom:0;flex:1" onchange="onRowPlayerSelect(this)">
+function addGameRow(){
+  const div=document.createElement('div');div.className='res-row';
+  div.innerHTML=`
+    <div class="res-top">
+      <select class="fselect" style="flex:1;margin-bottom:0" onchange="onRowSelect(this)">
         <option value="">— выберите участника —</option>
         ${allPlayers.map(p=>`<option value="${p.id}" data-tg="${p.telegram_id||''}">${p.full_name}</option>`).join('')}
       </select>
-      <button class="btn btn-red btn-sm" style="width:32px;padding:7px 0;margin-left:6px;font-size:var(--f-lg)" onclick="this.closest('.res-row').remove()">✕</button>
+      <button style="width:44px;height:44px;border-radius:8px;border:1px solid rgba(180,60,60,.3);background:rgba(180,60,60,.15);color:#e07070;font-size:18px;cursor:pointer;margin-left:8px;flex-shrink:0" onclick="this.closest('.res-row').remove()">✕</button>
     </div>
-    <div class="res-tgid" id="row-tg-${_jc}"></div>
-    <div class="res-inputs" style="margin-top:6px">
+    <div class="res-tgid"></div>
+    <div class="res-fields">
       <div>
         <div class="flabel">Место</div>
-        <select class="fselect" style="margin-bottom:0" data-field="place">
-          <option value="">—</option>
-          <option value="1">🥇 1 место</option>
-          <option value="2">🥈 2 место</option>
-          <option value="3">🥉 3 место</option>
-          <option value="4">4+ место</option>
+        <select class="fselect" data-field="place" style="margin-top:4px">
+          <option value="">—</option><option value="1">🥇 1 место</option><option value="2">🥈 2 место</option><option value="3">🥉 3 место</option><option value="4">4+ место</option>
         </select>
       </div>
       <div>
-        <div class="flabel">FIQ <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Financial IQ — число из карточки участника после игры.</div></span></div>
-        <input class="finput" style="margin-bottom:0" data-field="fiq" type="number" placeholder="напр. 2100" step="0.01" min="0">
+        <div class="flabel">FIQ <span class="tip-wrap"><button class="tip-btn" onclick="toggleTip(this)">?</button><div class="tip-popup">Financial IQ из карточки участника. Например: 2100.56 или 1800</div></span></div>
+        <input class="finput" data-field="fiq" type="number" placeholder="напр. 2100" step="0.01" min="0" style="margin-top:4px">
       </div>
     </div>`;
-  // Сохраняем уникальный id строки
-  div.dataset.rowId = ++_jc;
   document.getElementById('game-rows').appendChild(div);
 }
 
-function onRowPlayerSelect(sel) {
-  const tg = sel.options[sel.selectedIndex]?.dataset.tg||'';
-  const tgEl = sel.closest('.res-row').querySelector('.res-tgid');
-  if (tgEl) tgEl.textContent = tg ? 'Telegram ID: '+tg : '';
+function onRowSelect(sel){
+  const tg=sel.options[sel.selectedIndex]?.dataset.tg||'';
+  const tgEl=sel.closest('.res-row').querySelector('.res-tgid');
+  if(tgEl) tgEl.textContent=tg?'Telegram ID: '+tg:'';
 }
 
-async function adminAddPlayer() {
-  const name = document.getElementById('inp-name').value.trim();
-  const tgid = document.getElementById('inp-tgid').value.trim();
-  if (!name) { showToast('⚠️ Введите имя','err'); return; }
-  // Проверка дублей
-  const existing = allPlayers.find(p=>p.full_name.toLowerCase()===name.toLowerCase());
-  if (existing) {
-    if (tgid && String(existing.telegram_id)===String(tgid)) {
-      showToast('⛔ Участник с таким именем и Telegram ID уже существует','err'); return;
+async function adminAddPlayer(){
+  const name=document.getElementById('inp-name').value.trim();
+  const tgid=document.getElementById('inp-tgid').value.trim();
+  if(!name){showToast('⚠️ Введите имя','err');return;}
+  const existing=allPlayers.find(p=>p.full_name.toLowerCase()===name.toLowerCase());
+  if(existing){
+    if(tgid&&String(existing.telegram_id)===String(tgid)){
+      showToast('⛔ Участник с таким именем и Telegram ID уже существует','err');return;
     }
-    showToast('⚠️ Участник с таким именем уже есть в базе. Продолжить?','warn');
-    // Даём секунду для осознания, затем всё равно добавляем если нет совпадения ID
-    if (String(existing.telegram_id)===String(tgid)) return;
+    if(!tgid&&!existing.telegram_id){
+      showToast('⛔ Участник с таким именем уже есть','err');return;
+    }
+    showToast('⚠️ Участник с таким именем уже есть — проверьте данные','warn');return;
   }
-  const res = await apiPost({action:'addPlayer',full_name:name,telegram_id_player:tgid});
-  if (res.ok) {
-    showToast(`✅ Добавлен: ${name}`,'ok');
-    document.getElementById('inp-name').value='';
-    document.getElementById('inp-tgid').value='';
-    loadAdmin();
-  } else showToast('❌ '+(res.error||'Ошибка'),'err');
-}
-
-async function adminEditPlayer() {
-  const id=document.getElementById('sel-manage').value;
-  const name=document.getElementById('edit-name').value.trim();
-  const tgid=document.getElementById('edit-tgid').value.trim();
-  const tickets=document.getElementById('edit-tickets').value;
-  if (!id) return;
-  const res=await apiPost({action:'editPlayer',player_id:id,full_name:name,telegram_id_player:tgid,tickets});
-  if (res.ok){ showToast('✅ Сохранено','ok'); loadAdmin(); }
+  const res=await apiPost({action:'addPlayer',full_name:name,telegram_id_player:tgid});
+  if(res.ok){showToast(`✅ Добавлен: ${name}`,'ok');document.getElementById('inp-name').value='';document.getElementById('inp-tgid').value='';loadAdmin();}
   else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-async function adminUseTicket() {
+async function adminEditPlayer(){
   const id=document.getElementById('sel-manage').value;
-  if (!id) return;
+  if(!id) return;
+  const res=await apiPost({action:'editPlayer',player_id:id,full_name:document.getElementById('edit-name').value.trim(),telegram_id_player:document.getElementById('edit-tgid').value.trim(),tickets:document.getElementById('edit-tickets').value});
+  if(res.ok){showToast('✅ Сохранено','ok');loadAdmin();}
+  else showToast('❌ '+(res.error||'Ошибка'),'err');
+}
+
+async function adminUseTicket(){
+  const id=document.getElementById('sel-manage').value;
+  if(!id) return;
   const p=allPlayers.find(x=>String(x.id)===String(id));
-  if (p&&p.tickets<=0){ showToast('⚠️ Нет билетов','warn'); return; }
+  if(p&&p.tickets<=0){showToast('⚠️ Нет билетов','warn');return;}
   const res=await apiPost({action:'useTicket',player_id:id});
-  if (res.ok){ showToast('🎫 '+res.message,'ok'); loadAdmin(); }
+  if(res.ok){showToast('🎫 '+res.message,'ok');loadAdmin();}
   else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-async function adminRecordGame() {
+async function adminRecordGame(){
   const date=document.getElementById('game-date').value;
   const notes=document.getElementById('game-notes').value.trim();
-  if (!date){ showToast('⚠️ Укажите дату','err'); return; }
+  if(!date){showToast('⚠️ Укажите дату','err');return;}
   const rows=document.querySelectorAll('#game-rows .res-row');
-  if (!rows.length){ showToast('⚠️ Добавьте хотя бы одного участника','err'); return; }
-  const results=[];
-  let ok=true;
+  if(!rows.length){showToast('⚠️ Добавьте участников','err');return;}
+  const results=[];let ok=true;
   rows.forEach(row=>{
-    const pSel=row.querySelector('select');
-    const pid=pSel?.value;
+    const pid=row.querySelector('select')?.value;
     const place=row.querySelector('[data-field="place"]')?.value;
     const fiq=row.querySelector('[data-field="fiq"]')?.value;
-    if (!pid||!place||!fiq){ ok=false; return; }
+    if(!pid||!place||!fiq){ok=false;return;}
     const p=allPlayers.find(x=>String(x.id)===String(pid));
     results.push({player_id:pid,player_name:p?.full_name||'',place:parseInt(place),fiq:parseFloat(fiq)});
   });
-  if (!ok){ showToast('⚠️ Заполните все поля для каждого участника','err'); return; }
+  if(!ok){showToast('⚠️ Заполните все поля','err');return;}
   const res=await apiPost({action:'recordGame',date,notes,results});
-  if (res.ok){
-    showToast(`✅ Игра #${res.data.game_id} сохранена! (${res.data.participants} участников)`,'ok');
+  if(res.ok){
+    showToast(`✅ Игра сохранена! (${res.data.participants} участников)`,'ok');
     document.getElementById('game-notes').value='';
     document.getElementById('game-rows').innerHTML='';
     loadAdmin();
-    // Обновить таблицу если открыта
-    if (document.getElementById('tab-games').classList.contains('active')) loadGames();
-  } else showToast('❌ '+(res.error||'Ошибка'),'err');
+  }else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-// ── ИСТОРИЯ ИГР ───────────────────────────
-async function loadGames() {
+// ИСТОРИЯ ИГР
+async function loadGames(){
   const el=document.getElementById('games-content');
   el.innerHTML=loader();
-  try {
+  try{
     const res=await apiPost({action:'getFullHistory'});
-    if (!res.ok){ el.innerHTML=empty('📜','Нет прав или ошибка'); return; }
-    const data=res.data; // [{game_id,date,player_id,player_name,place,fiq,stamps}]
-    if (!data?.length){ el.innerHTML=empty('📜','Записей пока нет'); return; }
-    // Группировка по date
+    if(!res.ok){el.innerHTML=empty('📜','Ошибка загрузки');return;}
+    const data=res.data;
+    if(!data?.length){el.innerHTML=empty('📜','Записей пока нет');return;}
+    // Группировка по дате, сортировка от новых к старым
     const grouped={};
     data.forEach(r=>{
       const d=String(r.date);
-      if (!grouped[d]) grouped[d]={game_id:r.game_id,date:d,rows:[]};
+      if(!grouped[d]) grouped[d]={game_id:r.game_id,date:d,rows:[]};
       grouped[d].rows.push(r);
     });
+    // Сортировка строк внутри группы: 1 → 2 → 3 → 4+ → по FIQ desc
+    Object.values(grouped).forEach(g=>{
+      g.rows.sort((a,b)=>{
+        const pa=parseInt(a.place)||99, pb=parseInt(b.place)||99;
+        if(pa!==pb) return pa-pb;
+        return (parseFloat(b.fiq)||0)-(parseFloat(a.fiq)||0);
+      });
+    });
     const dates=Object.keys(grouped).sort().reverse();
-    let html='';
-    dates.forEach(d=>{
+    el.innerHTML=dates.map((d,gi)=>{
       const g=grouped[d];
-      html+=`<div style="margin-bottom:14px">
-        <div class="games-group-header">
-          <span>📅 ${fmtDateFull(d)} — Игра #${g.game_id}</span>
-          <button class="btn btn-teal btn-sm" onclick="addRowToGame('${d}','${g.game_id}')">+ Добавить</button>
+      const rowsHtml=g.rows.map((r,i)=>{
+        const rid=`${g.game_id}_${i}`;
+        return `<tr id="tr-${rid}">
+          <td><span class="vv-${rid}">${r.player_name}</span><input class="edit-cell-inp" id="en-${rid}" value="${r.player_name}" style="display:none"></td>
+          <td><span class="vv-${rid}"><span class="place-badge">${placeIcon(r.place)||r.place}</span></span><input class="edit-cell-inp" id="ep-${rid}" value="${r.place}" type="number" min="1" max="10" style="display:none;width:60px"></td>
+          <td><span class="vv-${rid}" style="color:var(--c3);font-weight:700">${r.stamps}🔖</span></td>
+          <td><span class="vv-${rid}" style="color:var(--c2);font-weight:700">${r.fiq}</span><input class="edit-cell-inp" id="ef-${rid}" value="${r.fiq}" type="number" step="0.01" style="display:none;width:80px"></td>
+        </tr>`;
+      }).join('');
+      return `<div class="game-group">
+        <div class="game-group-head" onclick="toggleGroup(this)">
+          <div>
+            <div class="game-group-date">📅 ${fmtDateFull(d)}</div>
+            <div style="font-size:var(--f-sm);color:var(--muted);margin-top:2px;font-weight:500">${g.rows.length} участников</div>
+          </div>
+          <span class="game-group-arrow">▾</span>
         </div>
-        <div class="table-wrap">
-          <table class="games-table">
-            <thead><tr>
-              <th>Участник</th><th>Место</th><th>Печати</th><th>FIQ</th><th style="width:60px">✏️</th>
-            </tr></thead>
-            <tbody id="tbody-${g.game_id}">
-              ${g.rows.map((r,i)=>gameRow(r,i)).join('')}
-            </tbody>
-          </table>
+        <div class="game-group-body">
+          <div class="table-wrap">
+            <table class="gtable">
+              <thead><tr><th>Участник</th><th>Место</th><th>Печати</th><th>FIQ</th></tr></thead>
+              <tbody id="tbody-${g.game_id}">${rowsHtml}</tbody>
+            </table>
+          </div>
+          <div class="add-row-area">
+            <button class="btn btn-teal btn-sm" onclick="toggleAddRow('${g.game_id}','${d}')">+ Добавить запись</button>
+            <div class="add-row-form" id="addrow-${g.game_id}">
+              <label class="flabel" style="margin-top:8px">Участник</label>
+              <select class="fselect" id="arp-${g.game_id}" style="margin-top:4px">
+                ${allPlayers.map(p=>`<option value="${p.id}">${p.full_name}</option>`).join('')}
+              </select>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+                <div><label class="flabel">Место</label><select class="fselect" id="arpl-${g.game_id}" style="margin-top:4px"><option value="1">🥇 1</option><option value="2">🥈 2</option><option value="3">🥉 3</option><option value="4">4+</option></select></div>
+                <div><label class="flabel">FIQ</label><input class="finput" id="arf-${g.game_id}" type="number" step="0.01" placeholder="FIQ" style="margin-top:4px"></div>
+              </div>
+              <button class="btn btn-peach" style="margin-top:8px" onclick="saveAddRow('${g.game_id}','${d}')">💾 СОХРАНИТЬ</button>
+            </div>
+          </div>
+          <div class="game-actions">
+            <button class="btn btn-teal btn-sm" onclick="startEditGame('${g.game_id}')">✏️ Редактировать</button>
+            <button class="btn btn-peach btn-sm" id="save-${g.game_id}" style="display:none" onclick="saveEditGame('${g.game_id}')">💾 Сохранить всё</button>
+          </div>
         </div>
       </div>`;
-    });
-    el.innerHTML=html;
-  } catch(e){ el.innerHTML=empty('⚠️','Ошибка загрузки'); }
+    }).join('');
+  }catch(e){el.innerHTML=empty('⚠️','Ошибка загрузки');}
 }
 
-function gameRow(r, i) {
-  const rid=`r-${r.game_id}-${i}`;
-  return `<tr id="${rid}">
-    <td><span class="view-${rid}">${r.player_name}</span><input class="edit-inp" id="en-${rid}" value="${r.player_name}" style="display:none"></td>
-    <td><span class="view-${rid}">${placeIcon(r.place)} ${r.place}</span><input class="edit-inp" id="ep-${rid}" value="${r.place}" type="number" min="1" max="10" style="display:none;width:60px"></td>
-    <td><span class="view-${rid}">${r.stamps}🔖</span></td>
-    <td><span class="view-${rid}" style="color:var(--c2);font-weight:700">${r.fiq}</span><input class="edit-inp" id="ef-${rid}" value="${r.fiq}" type="number" step="0.01" style="display:none;width:80px"></td>
-    <td>
-      <button class="edit-btn" onclick="startEdit('${rid}')" title="Редактировать">✏️</button>
-      <button class="save-btn" id="sv-${rid}" onclick="saveRow('${rid}','${r.game_id}','${r.player_id}')">💾</button>
-    </td>
-  </tr>`;
+function toggleGroup(head){
+  const body=head.nextElementSibling;
+  const arr=head.querySelector('.game-group-arrow');
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  if(arr) arr.classList.toggle('open',!isOpen);
 }
 
-function startEdit(rid) {
-  document.querySelectorAll(`.view-${rid}`).forEach(el=>el.style.display='none');
-  ['en','ep','ef'].forEach(p=>{ const el=document.getElementById(`${p}-${rid}`); if(el) el.style.display=''; });
-  const sv=document.getElementById(`sv-${rid}`); if(sv) sv.style.display='inline-block';
+function startEditGame(gid){
+  const tbody=document.getElementById('tbody-'+gid);
+  if(!tbody) return;
+  tbody.querySelectorAll('tr').forEach((tr,i)=>{
+    const rid=`${gid}_${i}`;
+    tr.querySelectorAll('.vv-'+rid).forEach(el=>el.style.display='none');
+    ['en','ep','ef'].forEach(p=>{const el=document.getElementById(`${p}-${rid}`);if(el) el.style.display='';});
+  });
+  document.getElementById('save-'+gid).style.display='inline-block';
 }
 
-async function saveRow(rid, gameId, playerId) {
-  const name=document.getElementById(`en-${rid}`)?.value;
-  const place=document.getElementById(`ep-${rid}`)?.value;
-  const fiq=document.getElementById(`ef-${rid}`)?.value;
-  const res=await apiPost({action:'editGameRow',game_id:gameId,player_id:playerId,player_name:name,place:parseInt(place),fiq:parseFloat(fiq)});
-  if (res.ok){ showToast('✅ Сохранено','ok'); loadGames(); }
-  else showToast('❌ '+(res.error||'Ошибка'),'err');
+async function saveEditGame(gid){
+  const tbody=document.getElementById('tbody-'+gid);
+  if(!tbody) return;
+  const rows=tbody.querySelectorAll('tr');
+  let allOk=true;
+  for(let i=0;i<rows.length;i++){
+    const rid=`${gid}_${i}`;
+    const name=document.getElementById(`en-${rid}`)?.value;
+    const place=document.getElementById(`ep-${rid}`)?.value;
+    const fiq=document.getElementById(`ef-${rid}`)?.value;
+    if(!name||!place||!fiq){allOk=false;continue;}
+    // Найти player_id по имени
+    const p=allPlayers.find(x=>x.full_name===name);
+    await apiPost({action:'editGameRow',game_id:gid,row_index:i,player_name:name,player_id:p?.id||'',place:parseInt(place),fiq:parseFloat(fiq)});
+  }
+  showToast(allOk?'✅ Сохранено':'⚠️ Сохранено с ошибками',allOk?'ok':'warn');
+  loadGames();
 }
 
-// Добавить строку к существующей игре
-function addRowToGame(date, gameId) {
-  const tbody=document.getElementById(`tbody-${gameId}`);
-  if (!tbody) return;
-  const newRow=document.createElement('tr');
-  newRow.innerHTML=`
-    <td><select class="edit-inp" id="add-p-${gameId}" style="width:100%">
-      ${allPlayers.map(p=>`<option value="${p.id}">${p.full_name}</option>`).join('')}
-    </select></td>
-    <td><select class="edit-inp" id="add-pl-${gameId}">
-      <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option>
-    </select></td>
-    <td>—</td>
-    <td><input class="edit-inp" id="add-f-${gameId}" type="number" step="0.01" placeholder="FIQ"></td>
-    <td><button class="save-btn" style="display:inline-block" onclick="saveNewRow('${gameId}','${date}')">💾</button></td>`;
-  tbody.appendChild(newRow);
+function toggleAddRow(gid,date){
+  const form=document.getElementById('addrow-'+gid);
+  if(form) form.classList.toggle('open');
 }
 
-async function saveNewRow(gameId, date) {
-  const pid=document.getElementById(`add-p-${gameId}`)?.value;
-  const place=document.getElementById(`add-pl-${gameId}`)?.value;
-  const fiq=document.getElementById(`add-f-${gameId}`)?.value;
-  if (!pid||!fiq){ showToast('⚠️ Заполните все поля','err'); return; }
+async function saveAddRow(gid,date){
+  const pid=document.getElementById(`arp-${gid}`)?.value;
+  const place=document.getElementById(`arpl-${gid}`)?.value;
+  const fiq=document.getElementById(`arf-${gid}`)?.value;
+  if(!pid||!fiq){showToast('⚠️ Заполните все поля','err');return;}
   const p=allPlayers.find(x=>String(x.id)===String(pid));
-  const res=await apiPost({action:'addGameRow',game_id:parseInt(gameId),date,player_id:pid,player_name:p?.full_name||'',place:parseInt(place),fiq:parseFloat(fiq)});
-  if (res.ok){ showToast('✅ Запись добавлена','ok'); loadGames(); }
+  const res=await apiPost({action:'addGameRow',game_id:parseInt(gid),date,player_id:pid,player_name:p?.full_name||'',place:parseInt(place),fiq:parseFloat(fiq)});
+  if(res.ok){showToast('✅ Запись добавлена','ok');loadGames();}
   else showToast('❌ '+(res.error||'Ошибка'),'err');
 }
 
-// ── Helpers ────────────────────────────────
+// HELPERS
 function stampWord(n){const m=n%10,h=n%100;if(h>=11&&h<=19)return'ей';if(m===1)return'ь';if(m>=2&&m<=4)return'и';return'ей';}
 function placeIcon(p){return p==1?'🥇':p==2?'🥈':p==3?'🥉':'';}
 function fmtDate(d){try{return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'short'})}catch(e){return d||''}}
 function fmtDateFull(d){try{return new Date(d).toLocaleDateString('ru-RU',{day:'numeric',month:'long',year:'numeric'})}catch(e){return d||''}}
-function loader(){return '<div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div>';}
-function empty(icon,txt){return `<div class="nf"><div class="nf-icon">${icon}</div>${txt}</div>`;}
+function loader(){return'<div class="loader"><div class="spinner"></div><div class="ltext">Загружаем…</div></div>';}
+function empty(icon,txt){return`<div class="nf"><div class="nf-icon">${icon}</div>${txt}</div>`;}
+function showToast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+type;clearTimeout(t._t);t._t=setTimeout(()=>{t.className='toast'},3500);}
+function toggleTip(btn){const pop=btn.nextElementSibling;if(!pop)return;document.querySelectorAll('.tip-popup.show').forEach(p=>{if(p!==pop)p.classList.remove('show');});pop.classList.toggle('show');setTimeout(()=>{document.addEventListener('click',()=>pop.classList.remove('show'),{once:true});},50);}
+function toggleInst(head){const b=head.nextElementSibling;const arr=head.querySelector('.inst-arrow');if(!b)return;const o=b.classList.contains('open');b.classList.toggle('open',!o);if(arr)arr.classList.toggle('open',!o);}
 
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.className='toast show '+type;
-  clearTimeout(t._t); t._t=setTimeout(()=>{t.className='toast'},3500);
-}
-
-function toggleTip(btn) {
-  const pop=btn.nextElementSibling;
-  if (!pop) return;
-  // Закрыть все другие
-  document.querySelectorAll('.tip-popup.show').forEach(p=>{ if(p!==pop) p.classList.remove('show'); });
-  pop.classList.toggle('show');
-  // Закрыть при клике снаружи
-  setTimeout(()=>{ document.addEventListener('click',()=>pop.classList.remove('show'),{once:true}); },50);
-}
-
-// ── INIT ───────────────────────────────────
-async function init() {
-  // Проверяем является ли пользователь администратором
-  if (tgUser) {
-    const res = await apiPost({action:'checkAdmin'});
-    if (res.ok && res.is_admin) {
-      isAdminUser = true;
+// INIT
+async function init(){
+  if(tgUser){
+    const res=await apiPost({action:'checkAdmin'});
+    if(res.ok&&res.is_admin){
       document.querySelectorAll('.tab-admin').forEach(t=>t.style.display='block');
     }
   }
